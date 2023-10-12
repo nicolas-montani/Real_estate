@@ -2,25 +2,6 @@ import sqlite3
 from sqlite3 import Error
 
 database = "Real_estate/flask_app/database/database.sql"
-    
-sql_create_projects_table = """ CREATE TABLE IF NOT EXISTS projects (
-                                        id integer PRIMARY KEY,
-                                        name text NOT NULL,
-                                        begin_date text,
-                                        end_date text
-                                    ); """
-
-sql_create_tasks_table = """CREATE TABLE IF NOT EXISTS tasks (
-                                    id integer PRIMARY KEY,
-                                    name text NOT NULL,
-                                    priority integer,
-                                    status_id integer NOT NULL,
-                                    project_id integer NOT NULL,
-                                    begin_date text NOT NULL,
-                                    end_date text NOT NULL,
-                                    FOREIGN KEY (project_id) REFERENCES projects (id)
-                                );"""
-
 #property(property_ID, standort, grösse, anzahl_zimmer, ausgestattet (t/f),building year)
 sql_create_propertys_table = """CREATE TABLE IF NOT EXISTS propertys(
                                     id integer PRIMARY KEY
@@ -151,15 +132,21 @@ def create_table(conn, create_table_sql):
 
 def main():
     conn = create_connection(database)
+    sql_create_agents_table
 
 
     if conn is not None:
-        # create projects table
-        create_table(conn, sql_create_projects_table)
-
-        # create tasks table
-        create_table(conn, sql_create_tasks_table)
-
+        # create propertys table
+        create_table(conn, sql_create_propertys_table)
+        create_table(conn, sql_create_agents_table)
+        create_table(conn, sql_create_clients_table )
+        create_table(conn, sql_create_owners_table )
+        create_table(conn, sql_create_invoices_table)
+        create_table(conn, sql_create_payments_table)
+        create_table(conn, sql_create_reminders_table)
+        create_table(conn, sql_create_reminders_table)
+        create_table(conn, sql_create_meetings_table)
+        
     else:
         print("Error! cannot create the database connection.")
 
