@@ -1,14 +1,15 @@
 import sqlite3
 from sqlite3 import Error
+from db_handler import create_connection
 
-database = "Real_estate/flask_app/database/database.sql"
+
 #property(property_ID, standort, grösse, anzahl_zimmer, ausgestattet (t/f),building year)
 sql_create_propertys_table = """CREATE TABLE IF NOT EXISTS propertys(
-                                    id integer PRIMARY KEY
-                                    name text NOT NULL,
-                                    size_m integer
-                                    rooms float
-                                    furniture boolean
+                                    id integer PRIMARY KEY,
+                                    location text NOT NULL,
+                                    size_m integer,
+                                    rooms float,
+                                    furniture boolean,
                                     building_year
                                 );"""
 
@@ -102,20 +103,6 @@ sql_create_meetings_table = """CREATE TABLE IF NOT EXISTS meetings(
                                       );"""
 
 
-def create_connection(db_file):
-    """ create a database connection to the SQLite database
-        specified by db_file
-    :param db_file: database file
-    :return: Connection object or None
-    """
-    conn = None
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-
-    return conn
 
 def create_table(conn, create_table_sql):
     """ create a table from the create_table_sql statement
@@ -130,13 +117,15 @@ def create_table(conn, create_table_sql):
         print(e)
     
 
-def main():
+def init_db():
+    database = r"flask_app/database/database.sql"
+    
+    
     conn = create_connection(database)
-    sql_create_agents_table
-
 
     if conn is not None:
         # create propertys table
+        print("Creating table...")
         create_table(conn, sql_create_propertys_table)
         create_table(conn, sql_create_agents_table)
         create_table(conn, sql_create_clients_table )
@@ -146,10 +135,11 @@ def main():
         create_table(conn, sql_create_reminders_table)
         create_table(conn, sql_create_reminders_table)
         create_table(conn, sql_create_meetings_table)
+
         
     else:
         print("Error! cannot create the database connection.")
 
 
 if __name__ == '__main__':
-    main()
+    init_db()
