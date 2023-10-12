@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  flask_app_1:
+    build: .
+    image: real_estate
+    ports:
+      - "5000:5000"
+    environment:
+      - FLASK_ENV=development
+      - FLASK_APP=app.py
+    command: flask run --host=0.0.0.0
