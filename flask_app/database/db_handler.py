@@ -39,5 +39,21 @@ def search(db_file, table, keyword):
               ('%' + keyword + '%',))
     return c.fetchall()
 
+def db_add_property(location, size_m, rooms, furniture, building_year):
+        # Connect to the database
+        conn = sqlite3.connect(DATABASE)
+        cursor = conn.cursor()
+
+            # Execute an SQL query to insert the data into the 'propertys' table
+        insert_query = "INSERT INTO propertys (location, size_m, rooms, furniture, building_year) VALUES (?, ?, ?, ?, ?)"
+        cursor.execute(insert_query, (location, size_m, rooms, furniture, building_year))
+
+        # Commit the changes to the database
+        conn.commit()
+
+        # Close the database connection
+        conn.close()
+
+
 
 

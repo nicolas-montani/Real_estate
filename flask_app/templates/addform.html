@@ -1,63 +1,29 @@
 <div>
-  <form>
-    <select name="category" id="category">
-      <option value="properties">Properties</option>
-      <option value="agents">Agents</option>
-      <option value="clients">Clients</option>
-      <option value="owners">Agents</option>
-      <option value="contracts">Agents</option>
-    </select>
+  <h1>Property</h1>
+  <form action="/add_property" method="POST">
+      <label for="location">Location:</label>
+      <input type="text" id="location" name="location" required>
+      <br>
+      
+      <label for="size_m">Size (in square meters):</label>
+      <input type="number" id="size_m" name="size_m" required>
+      <br>
 
-    <!-- Property Form -->
-    <div id="property-form" class="form-category" style="display: none">
-      <!-- Add property-related form fields here -->
-      <label for="property-name">Property Name:</label>
-      <input type="text" id="property-name" name="property-name" />
-    </div>
+      <label for="rooms">Number of Rooms:</label>
+      <input type="number" id="rooms" name="rooms" step="0.5" required>
+      <br>
 
-    <!-- Agent Form -->
-    <div id="agent-form" class="form-category" style="display: none">
-      <!-- Add agent-related form fields here -->
-      <label for="agent-name">Agent Name:</label>
-      <input type="text" id="agent-name" name="agent-name" />
-    </div>
+      <label for="furniture">Furniture:</label>
+      <select id="furniture" name="furniture" required>
+          <option value="1">Yes</option>
+          <option value="0">No</option>
+      </select>
+      <br>
+      
+      <label for="building_year">Building Year:</label>
+      <input type="number" id="building_year" name="building_year" required>
+      <br>
 
-    <!-- Client Form -->
-    <div id="client-form" class="form-category" style="display: none">
-      <!-- Add client-related form fields here -->
-      <label for="client-name">Client Name:</label>
-      <input type="text" id="client-name" name="client-name" />
-    </div>
-
-    <!-- Owner Form -->
-    <div id="owner-form" class="form-category" style="display: none">
-      <!-- Add owner-related form fields here -->
-      <label for="owner-name">Owner Name:</label>
-      <input type="text" id="owner-name" name="owner-name" />
-    </div>
-
-    <!-- Contract Form -->
-    <div id="contract-form" class="form-category" style="display: none">
-      <!-- Add contract-related form fields here -->
-      <label for="contract-type">Contract Type:</label>
-      <input type="text" id="contract-type" name="contract-type" />
-    </div>
+      <input type="submit" value="Submit">
   </form>
-
-  <script>
-    const categorySelect = document.getElementById("category");
-    const formCategories = document.querySelectorAll(".form-category");
-
-    categorySelect.addEventListener("change", () => {
-      // Hide all form categories
-      formCategories.forEach((formCategory) => {
-        formCategory.style.display = "none";
-      });
-
-      // Show the selected form category
-      const selectedCategory = categorySelect.value;
-      const selectedForm = document.getElementById(`${selectedCategory}-form`);
-      selectedForm.style.display = "block";
-    });
-  </script>
 </div>

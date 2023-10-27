@@ -1,5 +1,6 @@
-from flask import Flask, jsonify,request,render_template
-from database.db_handler import DATABASE, search
+from flask import Flask, jsonify,request,render_template,redirect, url_for
+from database.db_handler import DATABASE, search, db_add_property
+import sqlite3
 
 app = Flask(__name__)
 ####################################################################################################
@@ -41,10 +42,44 @@ def search_results():
 def load_page():
     page = request.args.get('page')
     try:
+        if page == "property.html" :
         # Render the specified HTML page
+            #get all properties and tertun them to properties.html
+            conn = sqlite3.connect(DATABASE)
+            cursor = conn.cursor()
+
+            # Retrieve all properties from the 'propertys' table
+            cursor.execute("SELECT * FROM propertys")
+            properties = cursor.fetchall()
+
+            # Close the database connection
+            conn.close()
+
+            return render_template('properties.html', properties=properties)
         return render_template(page)
     except :
         return "Content not found."
+
+#####
+@app.route('/add_property', methods=['POST'])
+def add_property():
+    if request.method == 'POST':
+        # Extract data from the form
+        location = request.form['location']
+        size_m = request.form['size_m']
+        rooms = request.form['rooms']
+        furniture = request.form['furniture']
+        building_year = request.form['building_year']
+
+        # Connect to the database
+        db_add_property(location, size_m, rooms, furniture, building_year)
+
+        # Redirect to a success page or back to the form
+        return redirect(url_for('success_page'))
+
+@app.route('/success_page')
+def success_page():
+    return 'Property added successfully!'
 
 if __name__ == '__main__':
     app.run()
