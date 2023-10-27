@@ -1,0 +1,10 @@
+<div>
+    <h1>Search Results</h1>
+    <p>Displaying results for "{{ query }}" in the "{{ category }}" category:</p>
+
+    <ul>
+        {% for result in results %}
+            <li>{{ result }}</li>
+        {% endfor %}
+    </ul>
+</div>

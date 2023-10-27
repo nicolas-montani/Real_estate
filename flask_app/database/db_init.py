@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
-from db_handler import create_connection
+from db_handler import create_connection, DATABASE, add
+from random_generator import *
 
 
 #property(property_ID, standort, grösse, anzahl_zimmer, ausgestattet (t/f),building year)
@@ -117,8 +118,7 @@ def create_table(conn, create_table_sql):
         print(e)
     
 
-def init_db():
-    database = r"flask_app/database/database.sql"
+def init_db(database):
     
     
     conn = create_connection(database)
@@ -133,7 +133,6 @@ def init_db():
         create_table(conn, sql_create_invoices_table)
         create_table(conn, sql_create_payments_table)
         create_table(conn, sql_create_reminders_table)
-        create_table(conn, sql_create_reminders_table)
         create_table(conn, sql_create_meetings_table)
 
         
@@ -141,5 +140,15 @@ def init_db():
         print("Error! cannot create the database connection.")
 
 
+
+
+def generate_properties():
+
+    for i in range(500):
+        values = str(i) + ","+ random_location() + " , " + str(random_size()) + ", " + str(random_rooms()) + ", " + str(random_bool()) + ", " + str(random_year())
+        add(DATABASE, "propertys", values)
+        print(values)
 if __name__ == '__main__':
-    init_db()
+    #init_db(DATABASE)
+    generate_properties()
+    
