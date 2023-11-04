@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Property</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="location">Location:</label>
+            <input type="text" name="location" required>
+        </div>
+        <div class="student">
+            <label for="size">Size (square meters):</label>
+            <input type="number" name="size" required>
+        </div>
+        <div class="student">
+            <label for="rooms">Number of Rooms:</label>
+            <input type="number" name="rooms" required step="0.1">
+        </div>
+        <div class="student">
+            <label for="building_year">Building Year:</label>
+            <input type="number" name="building_year" required>
+        </div>
+        <div class="student">
+            <button type="submit">Create</button>
+        </div>
+    </form>
+{% endblock %}

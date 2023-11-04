@@ -1,0 +1,33 @@
+<!-- create_contract.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Contract</h1>
+    <div class="content">
+        <form method="POST">
+            <label for="property_id">Property ID:</label>
+            <input type="text" name="property_id" id="property_id" required><br>
+
+            <label for="agent_id">Agent ID:</label>
+            <input type="text" name="agent_id" id="agent_id" required><br>
+
+            <label for="client_id">Client ID:</label>
+            <input type="text" name="client_id" id="client_id" required><br>
+
+            <label for="owner_id">Owner ID:</label>
+            <input type="text" name="owner_id" id="owner_id" required><br>
+
+            <label for="contract_type">Contract Type:</label>
+            <input type="text" name="contract_type" id="contract_type" required><br>
+
+            <label for="start_date">Start Date:</label>
+            <input type="date" name="start_date" id="start_date" required><br>
+
+            <label for="end_date">End Date:</label>
+            <input type="date" name="end_date" id="end_date"><br>
+
+            <input type="submit" value="Create Contract">
+        </form>
+    </div>
+    <a href="{{ url_for('show_contract') }}">Back to Contracts</a>
+{% endblock %}

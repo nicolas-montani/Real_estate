@@ -1,0 +1,30 @@
+<!-- show_contract.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">All Contracts</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>Property</th>
+                <th>Agent</th>
+                <th>Client</th>
+                <th>Owner</th>
+                <th>Contract Type</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+            </tr>
+            {% for contract in contracts %}
+                <tr>
+                    <td>{{ contract.property.location }}</td>
+                    <td>{{ contract.agent.first_name }} {{ contract.agent.last_name }}</td>
+                    <td>{{ contract.client.first_name }} {{ contract.client.last_name }}</td>
+                    <td>{{ contract.owner.first_name }} {{ contract.owner.last_name }}</td>
+                    <td>{{ contract.contract_type }}</td>
+                    <td>{{ contract.start_date }}</td>
+                    <td>{{ contract.end_date }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

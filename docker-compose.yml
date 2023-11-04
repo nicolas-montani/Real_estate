@@ -10,3 +10,5 @@ services:
       - FLASK_ENV=development
       - FLASK_APP=app.py
     command: flask run --host=0.0.0.0
+    volumes:
+      - ./flask_app:/app  # Bind mount the 'flask_app' directory to /app in the container

@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">{% block title %} Property {% endblock %}</h1>
+    <div class="content">
+        {% for property in properties %}
+            <div class="student">
+                <p><b>#{{ property.id }}</b></p>
+                <b>
+                    <p class="name">{{ property.location }} </p>
+                </b>
+                <p>{{ property.size }} square meters</p>
+                <p>{{ property.rooms }} rooms.</p>
+                <p>Build: {{ property.building_year }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

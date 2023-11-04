@@ -1,0 +1,27 @@
+<!-- client_list.html -->
+
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Client List</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Phone Number</th>
+                <th>Address</th>
+            </tr>
+            {% for client in clients %}
+                <tr>
+                    <td>{{ client.first_name }}</td>
+                    <td>{{ client.last_name }}</td>
+                    <td>{{ client.date_of_birth }}</td>
+                    <td>{{ client.phone_number }}</td>
+                    <td>{{ client.address }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
