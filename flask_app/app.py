@@ -225,6 +225,6 @@ def create_contract():
 
 if __name__ == '__main__':
     # Initialize the database and create tables
-    #db.drop_all()
+    #db.drop_all() # Remove this line when running the app for the first time
     #db.create_all()
     pass
