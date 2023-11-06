@@ -7,14 +7,13 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] =\
-        'sqlite:///' + os.path.join(basedir, 'database.sql')
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://real_estate_user:real_estate_password@db:5432/real_estate_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
 class Property(db.Model):
-    __tablename__ = 'propertys'
+    __tablename__ = 'properties'
 
     id = db.Column(db.Integer, primary_key=True)
     location = db.Column(db.String(100), nullable=False)
@@ -69,7 +68,7 @@ class Contract(db.Model):
     __tablename__ = 'contracts'
 
     id = db.Column(db.Integer, primary_key=True)
-    property_id = db.Column(db.Integer, db.ForeignKey('propertys.id'), nullable=False)
+    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
     agent_id = db.Column(db.Integer, db.ForeignKey('agents.id'), nullable=False)
     client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
     owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'), nullable=False)
@@ -223,8 +222,11 @@ def create_contract():
     # If the request method is GET, render the contract creation form
     return render_template('create_contract.html')
 
-if __name__ == '__main__':
+# Drop all tables
+with app.app_context():
     # Initialize the database and create tables
-    #db.drop_all() # Remove this line when running the app for the first time
-    #db.create_all()
-    pass
+    db.drop_all() # Remove this line when running the app for the first time
+    db.create_all()
+
+if __name__ == '__main__':
+    app.run(debug=True)

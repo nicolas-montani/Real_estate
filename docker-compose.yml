@@ -1,14 +1,29 @@
 version: "3"
 
 services:
-  flask_app_1:
-    build: .
+  flask_app:
+    build: ./flask_app
     image: real_estate
     ports:
-      - "5000:5000"
+      - "5001:5000"  # Changed from "5000:5000" to "5001:5000"
     environment:
       - FLASK_ENV=development
       - FLASK_APP=app.py
-    command: flask run --host=0.0.0.0
+    depends_on:
+      - db
     volumes:
-      - ./flask_app:/app  # Bind mount the 'flask_app' directory to /app in the container
+      - ./flask_app:/app
+
+  db:
+    image: postgres:latest
+    environment:
+      - POSTGRES_DB=real_estate_db
+      - POSTGRES_USER=real_estate_user
+      - POSTGRES_PASSWORD=real_estate_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  postgres_data:
