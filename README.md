@@ -6,6 +6,8 @@
 docker-compose up --build
 ```
 
+- Stop the allication using ^C in your terminal!
+
 - (If you need (you don't have to) to stop the container run the following command:)
 ```bash
 docker-compose down  
