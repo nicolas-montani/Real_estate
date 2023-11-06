@@ -6,7 +6,7 @@
 docker-compose up --build
 ```
 
-- (If you need to stop the container run the following command:
+- (If you need (you don't have to) to stop the container run the following command:)
 ```bash
 docker-compose down  
 ```
