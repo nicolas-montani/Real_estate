@@ -225,5 +225,6 @@ def create_contract():
 
 if __name__ == '__main__':
     # Initialize the database and create tables
-    db.drop_all()
-    db.create_all()
+    #db.drop_all()
+    #db.create_all()
+    pass
