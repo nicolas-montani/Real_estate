@@ -1,115 +1,161 @@
 import os
+import psycopg2
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from flask import Flask, render_template, request, url_for, redirect
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.sql import func
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 
-app = Flask(__name__)
+basedir = os.path.abspath(os.path.dirname(__file__)) # get the base directory of the project
+app = Flask(__name__) # create the Flask app
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://real_estate_user:real_estate_password@db:5432/real_estate_db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+DATABASE_NAME = 'real_estate_db' # name of the database to connect to
 
-db = SQLAlchemy(app)
+# Connection parameters, make sure to change these to your own settings
+POSTGRES_URL = 'postgresql://real_estate_user:real_estate_password@db:5432'
+DATABASE_URL = POSTGRES_URL + '/' + DATABASE_NAME
 
-class Property(db.Model):
-    __tablename__ = 'properties'
+# Function to open a connection to the database
+def get_db_connection():
+    conn = psycopg2.connect(DATABASE_URL)
+    return conn
 
-    id = db.Column(db.Integer, primary_key=True)
-    location = db.Column(db.String(100), nullable=False)
-    size = db.Column(db.Integer)
-    rooms = db.Column(db.Float)
-    building_year = db.Column(db.Integer) 
+# Function to create a new database in PostgreSQL
+def create_database(db_name):
+    # Connection string to connect with the default 'postgres' database
+    conn_string = POSTGRES_URL + '/postgres'
 
-    # Define the 'contracts' relationship
-    contracts = db.relationship('Contract', back_populates='property')
+    # Connect to the PostgreSQL server
+    conn = psycopg2.connect(conn_string)
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)  # <-- AUTOCOMMIT
+    cursor = conn.cursor()
 
-class Client(db.Model):
-    __tablename__ = 'clients'
+    # Check if the database already exists
+    cursor.execute(psycopg2.sql.SQL("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s"), (db_name,))
+    exists = cursor.fetchone()
 
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    date_of_birth = db.Column(db.String)
-    phone_number = db.Column(db.Integer)
-    address = db.Column(db.String)
+    # If the database does not exist, then create it
+    if not exists:
+        cursor.execute(psycopg2.sql.SQL("CREATE DATABASE {}").format(psycopg2.sql.Identifier(db_name)))
 
-    # Define the 'contracts' relationship
-    contracts = db.relationship('Contract', back_populates='client')
-    
-    
-class Owner(db.Model):
-    __tablename__ = 'owners'
+    cursor.close()
+    conn.close()
 
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    date_of_birth = db.Column(db.String)
-    phone_number = db.Column(db.Integer)
-    address = db.Column(db.String)
+# Function to create the database tables
+def setup_db():
+    # Create the database
+    create_database(DATABASE_NAME)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS properties (
+            id SERIAL PRIMARY KEY,
+            location VARCHAR(255) NOT NULL,
+            size INTEGER NOT NULL,
+            rooms INTEGER NOT NULL,
+            building_year INTEGER NOT NULL
+        );
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS clients (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(255) NOT NULL,
+            last_name VARCHAR(255) NOT NULL,
+            date_of_birth DATE NOT NULL,
+            phone_number VARCHAR(255) NOT NULL,
+            address VARCHAR(255) NOT NULL
+        );
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS owners (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(255) NOT NULL,
+            last_name VARCHAR(255) NOT NULL,
+            date_of_birth DATE NOT NULL,
+            phone_number VARCHAR(255) NOT NULL,
+            address VARCHAR(255) NOT NULL
+        );
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS agents (
+            id SERIAL PRIMARY KEY,
+            first_name VARCHAR(255) NOT NULL,
+            last_name VARCHAR(255) NOT NULL,
+            date_of_birth DATE NOT NULL,
+            phone_number VARCHAR(255) NOT NULL,
+            address VARCHAR(255) NOT NULL
+        );
+    ''')
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS contracts (
+            id SERIAL PRIMARY KEY,
+            property_id INTEGER NOT NULL,
+            client_id INTEGER NOT NULL,
+            owner_id INTEGER NOT NULL,
+            agent_id INTEGER NOT NULL,
+            price INTEGER NOT NULL,
+            FOREIGN KEY (property_id) REFERENCES properties (id),
+            FOREIGN KEY (client_id) REFERENCES clients (id),
+            FOREIGN KEY (owner_id) REFERENCES owners (id),
+            FOREIGN KEY (agent_id) REFERENCES agents (id)
+        );
+    ''')
+    conn.commit()
+    cur.close()
+    conn.close()
 
-    # Define the 'contracts' relationship
-    contracts = db.relationship('Contract', back_populates='owner')
 
-class Agent(db.Model):
-    __tablename__ = 'agents'
-
-    id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(db.String, nullable=False)
-    last_name = db.Column(db.String, nullable=False)
-    date_of_birth = db.Column(db.String)
-    email = db.Column(db.String, nullable=False)
-    phone_number = db.Column(db.Integer)
-
-    # Define the 'contracts' relationship
-    contracts = db.relationship('Contract', back_populates='agent')
-
-class Contract(db.Model):
-    __tablename__ = 'contracts'
-
-    id = db.Column(db.Integer, primary_key=True)
-    property_id = db.Column(db.Integer, db.ForeignKey('properties.id'), nullable=False)
-    agent_id = db.Column(db.Integer, db.ForeignKey('agents.id'), nullable=False)
-    client_id = db.Column(db.Integer, db.ForeignKey('clients.id'), nullable=False)
-    owner_id = db.Column(db.Integer, db.ForeignKey('owners.id'), nullable=False)
-    contract_type = db.Column(db.String)
-    start_date = db.Column(db.String, nullable=False)
-    end_date = db.Column(db.String)
-
-    property = db.relationship('Property', back_populates='contracts')
-    agent = db.relationship('Agent', back_populates='contracts')
-    client = db.relationship('Client', back_populates='contracts')
-    owner = db.relationship('Owner', back_populates='contracts')
-
-#####show stuff ########
+# show stuff
 @app.route('/')
 def show_property():
-    properties = Property.query.all()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM properties;')
+    properties = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('show_property.html', properties=properties)
 
 @app.route('/show_client')
 def show_client():
-    clients = Client.query.all()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM clients;')
+    clients = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('show_client.html', clients=clients)
 
 @app.route('/show_owner')
 def show_owner():
-    owners = Owner.query.all()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM owners;')
+    owners = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('show_owner.html', owners=owners)
 
 @app.route('/show_agent')
 def show_agent():
-    agents = Agent.query.all()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM agents;')
+    agents = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('show_agent.html', agents=agents)
-
 
 @app.route('/show_contract')
 def show_contract():
-    # Retrieve all contracts from the database
-    contracts = Contract.query.all()
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM contracts;')
+    contracts = cur.fetchall()
+    cur.close()
+    conn.close()
     return render_template('show_contract.html', contracts=contracts)
 
-######create stuff########
+
+# create stuff
 @app.route('/create_property', methods=['GET', 'POST'])
 def create_property():
     if request.method == 'POST':
@@ -117,14 +163,16 @@ def create_property():
         size = request.form['size']
         rooms = request.form['rooms']
         building_year = request.form['building_year']
-
-        # Create a new Property object and add it to the database
-        property = Property(location=location, size=size, rooms=rooms, building_year=building_year)
-        db.session.add(property)
-        db.session.commit()
-
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO properties (location, size, rooms, building_year) VALUES (%s, %s, %s, %s)',
+                    (location, size, rooms, building_year))
+        conn.commit()
+        cur.close()
+        conn.close()
+        
         return redirect(url_for('show_property'))
-
     return render_template('create_property.html')
 
 @app.route('/create_client', methods=['GET', 'POST'])
@@ -132,16 +180,19 @@ def create_client():
     if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
-        date_of_birth = str(request.form['date_of_birth'])
+        date_of_birth = request.form['date_of_birth']
         phone_number = request.form['phone_number']
         address = request.form['address']
 
-        # Create a new Client object and add it to the database
-        client = Client(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth, phone_number=phone_number, address=address)
-        db.session.add(client)
-        db.session.commit()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO clients (first_name, last_name, date_of_birth, phone_number, address) VALUES (%s, %s, %s, %s, %s)',
+                    (first_name, last_name, date_of_birth, phone_number, address))
+        conn.commit()
+        cur.close()
+        conn.close()
 
-        return redirect(url_for('show_client'))  # Assuming 'index' is your main client list view
+        return redirect(url_for('show_client'))
 
     return render_template('create_client.html')
 
@@ -150,43 +201,39 @@ def create_owner():
     if request.method == 'POST':
         first_name = request.form['first_name']
         last_name = request.form['last_name']
-        date_of_birth = str(request.form['date_of_birth'])
+        date_of_birth = request.form['date_of_birth']
         phone_number = request.form['phone_number']
         address = request.form['address']
 
-        # Create a new Owner object and add it to the database
-        owner = Owner(first_name=first_name, last_name=last_name, date_of_birth=date_of_birth, phone_number=phone_number, address=address)
-        db.session.add(owner)
-        db.session.commit()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO owners (first_name, last_name, date_of_birth, phone_number, address) VALUES (%s, %s, %s, %s, %s)',
+                    (first_name, last_name, date_of_birth, phone_number, address))
+        conn.commit()
+        cur.close()
+        conn.close()
 
         return redirect(url_for('show_owner'))
-    
-    return render_template('create_owner.html')
 
+    return render_template('create_owner.html')
 
 @app.route('/create_agent', methods=['GET', 'POST'])
 def create_agent():
     if request.method == 'POST':
-        # Retrieve data from the form
-        first_name = request.form.get('first_name')
-        last_name = request.form.get('last_name')
-        date_of_birth = str(request.form.get('date_of_birth'))
-        email = request.form.get('email')
-        phone_number = request.form.get('phone_number')
+        first_name = request.form['first_name']
+        last_name = request.form['last_name']
+        date_of_birth = request.form['date_of_birth']
+        email = request.form['email']
+        phone_number = request.form['phone_number']
 
-        # Create a new agent record and save it to the database
-        agent = Agent(
-            first_name=first_name,
-            last_name=last_name,
-            date_of_birth=date_of_birth,
-            email=email,
-            phone_number=phone_number
-        )
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO agents (first_name, last_name, date_of_birth, email, phone_number) VALUES (%s, %s, %s, %s, %s)',
+                    (first_name, last_name, date_of_birth, email, phone_number))
+        conn.commit()
+        cur.close()
+        conn.close()
 
-        db.session.add(agent)
-        db.session.commit()
-
-        # Redirect to the agent list page after creating the agent
         return redirect(url_for('show_agent'))
 
     return render_template('create_agent.html')
@@ -194,39 +241,29 @@ def create_agent():
 @app.route('/create_contract', methods=['GET', 'POST'])
 def create_contract():
     if request.method == 'POST':
-        # Retrieve contract data from the form
-        property_id = request.form.get('property_id')
-        agent_id = request.form.get('agent_id')
-        client_id = request.form.get('client_id')
-        owner_id = request.form.get('owner_id')
-        contract_type = request.form.get('contract_type')
-        start_date = str(request.form.get('start_date'))
-        end_date = str(request.form.get('end_date'))
+        property_id = request.form['property_id']
+        agent_id = request.form['agent_id']
+        client_id = request.form['client_id']
+        owner_id = request.form['owner_id']
+        contract_type = request.form['contract_type']
+        start_date = request.form['start_date']
+        end_date = request.form['end_date']
 
-        # Create a new contract and add it to the database
-        new_contract = Contract(
-            property=Property.query.get(property_id),
-            agent=Agent.query.get(agent_id),
-            client=Client.query.get(client_id),
-            owner=Client.query.get(owner_id),
-            contract_type=contract_type,
-            start_date=start_date,
-            end_date=end_date
-        )
-
-        db.session.add(new_contract)
-        db.session.commit()
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO contracts (property_id, agent_id, client_id, owner_id, contract_type, start_date, end_date) VALUES (%s, %s, %s, %s, %s, %s, %s)',
+                    (property_id, agent_id, client_id, owner_id, contract_type, start_date, end_date))
+        conn.commit()
+        cur.close()
+        conn.close()
 
         return redirect(url_for('show_contract'))
 
-    # If the request method is GET, render the contract creation form
     return render_template('create_contract.html')
 
 # Drop all tables
 with app.app_context():
-    # Initialize the database and create tables
-    db.drop_all() # Remove this line when running the app for the first time
-    db.create_all()
+    setup_db()
 
 if __name__ == '__main__':
     app.run(debug=True)
