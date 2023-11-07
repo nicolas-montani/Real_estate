@@ -2,7 +2,7 @@
 
 ## Project Overview
 Welcome to the Real Estate Management Database repository! This project is designed to be an indispensable tool, aiming to streamline agents's daily operations and bring a higher level of organization.
-This database serves as a centralized solution for agents to store all relevant information and retrieve it effortlessly when needed.
+It serves as a centralized solution for agents to store all relevant information and retrieve it effortlessly when needed.
 
 
 
