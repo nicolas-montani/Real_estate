@@ -1,7 +1,15 @@
-# Database for Real Estate Management
+# Real Estate Management Database
 
-## Commands to run the application:
-- To **start the application** navigate to Real_estate/flask_app and run the following command:
+## Project Overview
+Welcome to the Real Estate Management Database repository! This project is designed to be an indispensable tool, aiming to streamline agents's daily operations and bring a higher level of organization.
+This database serves as a centralized solution for agents to store all relevant information and retrieve it effortlessly when needed.
+
+
+
+## Getting Started:
+1. Clone the repository to your local machine.
+
+2. To **start the application** navigate to Real_estate/flask_app and run the following command:
 ```bash
 docker-compose up --build
 ```
@@ -14,7 +22,7 @@ docker-compose down
 ```
 
 
-- **Accessing the Application:** Once the container is running, you should be able to access your Flask application by:
+3. **Accessing the Application:** Once the container is running, you should be able to access your Flask application by:
 ```bash
   http://localhost:5001
 ```
