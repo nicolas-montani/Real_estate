@@ -111,6 +111,7 @@
                 <a href="{{ url_for('show_owner') }}">Owner</a>
                 <a href="{{ url_for('show_agent') }}">Agent</a>
                 <a href="{{ url_for('show_contract') }}">Contract</a>
+                <a href="{{ url_for('about_us') }}">About us</a>
             </div>
         </div>
         <div class="dropdown" display="none">
@@ -123,7 +124,8 @@
                 <a href="{{ url_for('create_contract') }}">Contract</a>
             </div>
         </div>
-        <a href="#">About</a>
+        <a href="{{ url_for('about_us') }}">About us</a>
+
     </nav>  
     <hr>
     <div class="content">

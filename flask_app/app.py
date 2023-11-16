@@ -240,6 +240,10 @@ def show_contract():
     conn.close()
     return render_template('show_contract.html', contracts=contracts)
 
+@app.route('/about-us')
+def about_us():
+    return render_template('about_us.html')
+
 
 # create stuff
 @app.route('/create_property', methods=['GET', 'POST'])

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About Us</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            color: #800080; /* Darker text for contrast */
+        }
+
+        #backgroundVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%; 
+            min-height: 100%;
+            width: auto; 
+            height: auto;
+            z-index: -100; /* Ensures video stays in the background */
+            background-size: cover;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 228, 225, 0.8); /* Lighter pink with transparency */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            text-align: center;
+            color: #d02090; /* Pinkish text for headers */
+        }
+
+        .dream-castle {
+            margin-bottom: 100px;
+            border-bottom: 30px solid #ffc0cb; /* Pink border for separation */
+            padding-bottom: 20px;
+        }
+
+        .team-photo {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ff69b4; /* Bright pink border for images */
+        }
+
+        h1, h2, h3 {
+            color: #ff1493; /* Deep pink for titles */
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop id="backgroundVideo">
+        <source src="{{ url_for('static', filename='sparkle.mp4') }}" type="video/mp4">
+        Your browser does not support HTML5 video.
+    </video>
+    
+
+<div class="container">
+    <header>
+        <h1>About Our Team</h1>
+        <p>Welcome to our About Us page! Here you can learn more about our team and our mission.</p>
+    </header>
+    
+    <section>
+        <h2>Our Mission</h2>
+        <p>Our mission is to provide the best service to our clients!</p>
+    </section>
+    
+    <section>
+        <h2>Contact Us</h2>
+        <p>If you have any questions, feel free to reach out to us at contact@example.com</p>
+    </section>
+    <section>
+        <h2>We want to provide you this:</h2>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='castle.png') }}" alt="Emma!" class="dream-castle">
+            <h3>Dream</h3>
+            <p>This is our dream.</p>
+        </div>
+        <p>If you have any questions, feel free to reach out to us at contact@example.com</p>
+    </section>
+       <!-- Team Section -->
+        <section>
+            <h2>Our Team</h2>
+        </section>
+
+    <!-- Individual Team Member Portraits -->
+    <section>
+        <h2>Meet Our Team</h2>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='kozmer.jpg') }}" alt="Emma!" class="team-photo">
+            <h3>Emma Kozmer</h3>
+            <p>Emma is our CEO. A random fact about her is that she loves aloyoga pants.</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='muller.png') }}" alt="Luisa!" class="team-photo">
+            <h3>Luisa Ella Mueller</h3>
+            <p>Luisa is our CFO. She puts in milk before cereal.</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='keller.jpg') }}" alt="Nico!" class="team-photo">
+            <h3>Nicolas Keller</h3>
+            <p>Nicolas is our Key Account Manager. He will never stay at home on a wednesday evening.</p>
+        </div>
+        <div class="team-member">
+            <img src="{{ url_for('static', filename='montani.jpg') }}" alt="Nico!" class="team-photo">
+            <h3>Nicolas Montani</h3>
+            <p>He is our Head of Development. You find him founding some clothbrands in the meantime.</p>
+        </div>
+    </section>
+</div>
+
+</body>
+</html>
