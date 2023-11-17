@@ -3,10 +3,7 @@
 <head>
     <title>About Us</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            color: #800080; /* Darker text for contrast */
-        }
+        
 
         #backgroundVideo {
             position: fixed;
@@ -16,7 +13,7 @@
             min-height: 100%;
             width: auto; 
             height: auto;
-            z-index: -100; /* Ensures video stays in the background */
+            z-index: -100; /* Stellt sicher, dass das Video im Hintergrund bleibt */
             background-size: cover;
         }
 
@@ -24,19 +21,19 @@
             width: 80%;
             margin: 0 auto;
             padding: 20px;
-            background-color: rgba(255, 228, 225, 0.8); /* Lighter pink with transparency */
+            background-color: rgba(255, 228, 225, 0.8); /* Helleres Pink mit Transparenz */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
         header {
             text-align: center;
-            color: #d02090; /* Pinkish text for headers */
+            color: #d02090; /* Pinkfarbener Text für Überschriften */
         }
 
         .dream-castle {
             margin-bottom: 100px;
-            border-bottom: 30px solid #ffc0cb; /* Pink border for separation */
+            border-bottom: 30px solid #ffc0cb; /* Pinkfarbene Grenze zur Trennung */
             padding-bottom: 20px;
         }
 
@@ -44,75 +41,126 @@
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            border: 3px solid #ff69b4; /* Bright pink border for images */
+            border: 3px solid #ff69b4; /* Helles Pink für Bilder */
         }
 
         h1, h2, h3 {
-            color: #ff1493; /* Deep pink for titles */
+            color: #ff1493; /* Tiefes Pink für Titel */
         }
+
+        .animate-charcter {
+            text-transform: uppercase;
+            background-image: linear-gradient(
+                -225deg,
+                #231557 0%,
+                #44107a 29%,
+                #ff1361 67%,
+                #fff800 100%
+            );
+            background-size: auto auto;
+            background-clip: border-box;
+            background-size: 200% auto;
+            color: #fff;
+            background-clip: text;
+            text-fill-color: transparent;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textclip 2s linear infinite;
+            display: inline-block;
+            font-size: 190px;
+        }
+
+        @keyframes textclip {
+            to {
+                background-position: 200% center;
+            }
+            
+        }
+        @keyframes colorChange {
+    0% { color: #ff1493; }
+    25% { color: #ff69b4; }
+    50% { color: #d02090; }
+    75% { color: #fac337; }
+    100% { color: #c40e6f; }
+}
+
+#about-our-team {
+    animation: colorChange 5s infinite;
+}
+
+
+        #animated-title {
+    background: linear-gradient(-45deg, #ff1493, #ff69b4, #d02090, #ffc0cb);
+    background-size: 400% 400%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: gradient-animation 5s ease infinite;
+    text-align: center;
+    font-size: 2.5em; /* Adjust font size as needed */
+}
     </style>
 </head>
 <body>
     <video autoplay muted loop id="backgroundVideo">
         <source src="{{ url_for('static', filename='sparkle.mp4') }}" type="video/mp4">
-        Your browser does not support HTML5 video.
+        Ihr Browser unterstützt HTML5 Video nicht.
     </video>
     
+    <div class="container">
+        <header>
+            <h1 id="about-our-team">About Our Team</h1>
 
-<div class="container">
-    <header>
-        <h1>About Our Team</h1>
-        <p>Welcome to our About Us page! Here you can learn more about our team and our mission.</p>
-    </header>
-    
-    <section>
-        <h2>Our Mission</h2>
-        <p>Our mission is to provide the best service to our clients!</p>
-    </section>
-    
-    <section>
-        <h2>Contact Us</h2>
-        <p>If you have any questions, feel free to reach out to us at contact@example.com</p>
-    </section>
-    <section>
-        <h2>We want to provide you this:</h2>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='castle.png') }}" alt="Emma!" class="dream-castle">
-            <h3>Dream</h3>
-            <p>This is our dream.</p>
-        </div>
-        <p>If you have any questions, feel free to reach out to us at contact@example.com</p>
-    </section>
-       <!-- Team Section -->
+            <p>Willkommen auf unserer Seite "Über uns"! Hier erfahren Sie mehr über unser Team und unsere Mission.</p>
+        </header>
+        
+        
         <section>
-            <h2>Our Team</h2>
+            <h2>Our Mission</h2>
+            <p>Unsere Mission ist es, unseren Kunden den bestmöglichen Service zu bieten!</p>
+        </section>
+        
+        <section>
+            <h2>Kontaktieren Sie uns</h2>
+            <p>Wenn Sie Fragen haben, können Sie uns gerne unter contact@example.com kontaktieren.</p>
+        </section>
+        <section>
+            <h2>Das möchten wir Ihnen bieten:</h2>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='castle.png') }}" alt="Emma!" class="dream-castle">
+                <h3>Traum</h3>
+                <p>Das ist unser Traum.</p>
+            </div>
+            <p>Wenn Sie Fragen haben, können Sie uns gerne unter contact@example.com kontaktieren.</p>
         </section>
 
-    <!-- Individual Team Member Portraits -->
-    <section>
-        <h2>Meet Our Team</h2>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='kozmer.jpg') }}" alt="Emma!" class="team-photo">
-            <h3>Emma Kozmer</h3>
-            <p>Emma is our CEO. A random fact about her is that she loves aloyoga pants.</p>
-        </div>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='muller.png') }}" alt="Luisa!" class="team-photo">
-            <h3>Luisa Ella Mueller</h3>
-            <p>Luisa is our CFO. She puts in milk before cereal.</p>
-        </div>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='keller.jpg') }}" alt="Nico!" class="team-photo">
-            <h3>Nicolas Keller</h3>
-            <p>Nicolas is our Key Account Manager. He will never stay at home on a wednesday evening.</p>
-        </div>
-        <div class="team-member">
-            <img src="{{ url_for('static', filename='montani.jpg') }}" alt="Nico!" class="team-photo">
-            <h3>Nicolas Montani</h3>
-            <p>He is our Head of Development. You find him founding some clothbrands in the meantime.</p>
-        </div>
-    </section>
-</div>
+        <!-- Animierter Textbereich -->
+        
 
+        <!-- Team-Abschnitt -->
+        <section>
+            <h2>Unser Team</h2>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='kozmer.jpg') }}" alt="Emma!" class="team-photo">
+                <h3>Emma Kozmer</h3>
+                <p>Emma ist unsere CEO. Eine zufällige Tatsache über sie ist, dass sie Aloyoga-Hosen liebt.</p>
+            </div>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='muller.png') }}" alt="Luisa!" class="team-photo">
+                <h3>Luisa Ella Mueller</h3>
+                <p>Luisa ist unsere CFO. Sie gibt Milch vor dem Müsli in die Schüssel.</p>
+            </div>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='keller.jpg') }}" alt="Nico!" class="team-photo">
+                <h3>Nicolas Keller</h3>
+                <p>Nicolas ist unser Key Account Manager. Er bleibt nie an einem Mittwochabend zu Hause.</p>
+            </div>
+            <div class="team-member">
+                <img src="{{ url_for('static', filename='montani.jpg') }}" alt="Nico!" class="team-photo">
+                <h3>Nicolas Montani</h3>
+                <p>Er ist unser Leiter der Entwicklung. In seiner Freizeit gründet er Kleidungsmarken.</p>
+            </div>
+        </section>
+    </div>
 </body>
 </html>
