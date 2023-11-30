@@ -35,31 +35,38 @@ def setup_db():
             building_year INTEGER NOT NULL
         );
     ''')
+    #Client
     cur.execute('''
         CREATE TABLE IF NOT EXISTS clients (
             id SERIAL PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
             date_of_birth DATE NOT NULL,
             phone_number VARCHAR(255) NOT NULL,
             address VARCHAR(255) NOT NULL
         );
     ''')
+    #Owner
     cur.execute('''
         CREATE TABLE IF NOT EXISTS owners (
             id SERIAL PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
             date_of_birth DATE NOT NULL,
             phone_number VARCHAR(255) NOT NULL,
             address VARCHAR(255) NOT NULL
         );
     ''')
+    #agents
+
     cur.execute('''
         CREATE TABLE IF NOT EXISTS agents (
             id SERIAL PRIMARY KEY,
             first_name VARCHAR(255) NOT NULL,
             last_name VARCHAR(255) NOT NULL,
+            email VARCHAR(255) NOT NULL,
             date_of_birth DATE NOT NULL,
             phone_number VARCHAR(255) NOT NULL
         );
@@ -125,26 +132,26 @@ def seed_db():
 
         # Insert data into the clients table
         cur.execute('''
-        INSERT INTO clients (first_name, last_name, date_of_birth, phone_number, address)
+        INSERT INTO clients (first_name, last_name, email, date_of_birth, phone_number, address)
         VALUES
-        ('John', 'Doe', '1980-01-01', '1234567890', '123 Main St'),
-        ('Jane', 'Smith', '1990-05-15', '0987654321', '456 Elm St');
+        ('John', 'Doe', 'johnny@gmail.com', '1980-01-01', '1234567890', '123 Main St'),
+        ('Jane', 'Smith', 'janey@gmail.com', '1990-05-15', '0987654321', '456 Elm St');
         ''')
 
         # Insert data into the owners table
         cur.execute('''
-        INSERT INTO owners (first_name, last_name, date_of_birth, phone_number, address)
+        INSERT INTO owners (first_name, last_name, email, date_of_birth, phone_number, address)
         VALUES
-        ('Alice', 'Johnson', '1975-09-30', '2345678901', '789 Maple St'),
-        ('Bob', 'Brown', '1965-04-20', '8765432109', '101 Oak St');
+        ('Alice', 'Johnson', 'alice@gmail.com', '1975-09-30', '2345678901', '789 Maple St'),
+        ('Bob', 'Brown', 'boby@gmail.com', '1965-04-20', '8765432109', '101 Oak St');
         ''')
 
         # Insert data into the agents table
         cur.execute('''
-        INSERT INTO agents (first_name, last_name, date_of_birth, phone_number)
+        INSERT INTO agents (first_name, last_name, email, date_of_birth, phone_number)
         VALUES
-        ('Charlie', 'Agent', '1985-07-11', '3456789012'),
-        ('Diana', 'Broker', '1979-11-25', '5678901234');
+        ('Charlie', 'Agent', 'emai@email.com', '1985-07-11', '3456789012'),
+        ('Diana', 'Broker', 'email@email.com', '1979-11-25', '5678901234');
         ''')
 
         # Insert data into the contracts table
