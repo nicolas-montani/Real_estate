@@ -6,17 +6,19 @@
     <div class="content">
         <table>
             <tr>
+                <th>Contract ID</th>
+                <th>Sign Date</th>
                 <th>Agent</th>
                 <th>Client</th>
-                <th>Owner</th>
-                <th>Price</th>
+                <th>Property ID</th>
             </tr>
             {% for contract in contracts %}
                 <tr>
+                    <td>{{ contract.contract_id }}</td>
+                    <td>{{ contract.sign_date }}</td>
                     <td>{{ contract.agent_first_name }} {{ contract.agent_last_name }}</td>
                     <td>{{ contract.client_first_name }} {{ contract.client_last_name }}</td>
-                    <td>{{ contract.owner_first_name }} {{ contract.owner_last_name }}</td>
-                    <td>{{ contract.price }}</td>
+                    <td>{{ contract.property_id }}</td>
                 </tr>
             {% endfor %}
         </table>

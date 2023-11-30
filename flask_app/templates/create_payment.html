@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Payment</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="amount">Amount:</label>
+            <input type="number" name="amount" required step="0.01">
+        </div>
+        <div class="student">
+            <label for="date">Date:</label>
+            <input type="date" name="date" required>
+        </div>
+        <div class="student">
+            <label for="contract_id">Contract:</label>
+            <select name="contract_id" required>
+                <option value="">Select a Contract</option>
+                {% for contract in contracts %}
+                    <option value="{{ contract.contract_id }}">Contract #{{ contract.contract_id }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="student">
+            <button type="submit">Create Payment</button>
+        </div>
+    </form>
+{% endblock %}

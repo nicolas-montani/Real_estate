@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Address List{% endblock %}
+
+{% block content %}
+    <h1 class="title">Address List</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Street Number</th>
+                <th>Address Line</th>
+                <th>Country</th>
+                <th>Postal Code</th>
+            </tr>
+            {% for address in address_entries %}
+                <tr>
+                    <td>{{ address.address_id }}</td>
+                    <td>{{ address.street_number }}</td>
+                    <td>{{ address.address_line }}</td>
+                    <td>{{ address.country }}</td>
+                    <td>{{ address.postal_code }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

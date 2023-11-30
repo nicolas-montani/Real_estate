@@ -1,0 +1,24 @@
+<!-- show_payment.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">All Payments</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>Payment ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+                <th>Contract ID</th>
+            </tr>
+            {% for payment in payments %}
+                <tr>
+                    <td>{{ payment.payment_id }}</td>
+                    <td>{{ payment.amount }}</td>
+                    <td>{{ payment.date.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ payment.contract_id }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

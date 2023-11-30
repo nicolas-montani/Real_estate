@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Address</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="street_number">Street Number:</label>
+            <input type="number" name="street_number" required>
+        </div>
+        <div class="student">
+            <label for="address_line">Address Line:</label>
+            <input type="text" name="address_line" required>
+        </div>
+        <div class="student">
+            <label for="country">Country:</label>
+            <input type="text" name="country" required>
+        </div>
+        <div class="student">
+            <label for="postal_code">Postal Code:</label>
+            <input type="text" name="postal_code" required>
+        </div>
+        <div class="student">
+            <button type="submit">Create Address</button>
+        </div>
+    </form>
+{% endblock %}

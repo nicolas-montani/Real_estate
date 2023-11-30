@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block title %}Person List{% endblock %}
+
+{% block content %}
+    <h1 class="title">Person List</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Date of Birth</th>
+                <th>Phone Number</th>
+                <th>Email</th>
+                <th>Address</th>
+            </tr>
+            {% for person in persons %}
+                <tr>
+                    <td>{{ person.person_id }}</td>
+                    <td>{{ person.first_name }}</td>
+                    <td>{{ person.last_name }}</td>
+                    <td>{{ person.date_of_birth.strftime('%Y-%m-%d') }}</td>
+                    <td>{{ person.phone_number }}</td>
+                    <td>{{ person.email }}</td>
+                    <td>{{ person.address_line }}, {{ person.country }} {{ person.postal_code }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

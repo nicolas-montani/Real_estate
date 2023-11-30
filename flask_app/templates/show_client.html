@@ -7,21 +7,25 @@
     <div class="content">
         <table>
             <tr>
+                <th>ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Date of Birth</th>
                 <th>Phone Number</th>
-                <th>Address</th>
+                <th>Address Line</th>
+                <th>Purchase Date</th>
             </tr>
             {% for client in clients %}
                 <tr>
+                    <td>{{ client.client_id }}</td>
                     <td>{{ client.first_name }}</td>
                     <td>{{ client.last_name }}</td>
                     <td>{{ client.email }}</td>
-                    <td>{{ client.date_of_birth }}</td>
+                    <td>{{ client.date_of_birth.strftime('%Y-%m-%d') if client.get('date_of_birth') else 'N/A' }}</td>
                     <td>{{ client.phone_number }}</td>
-                    <td>{{ client.address }}</td>
+                    <td>{{ client.address_line }}</td>
+                    <td>{{ client.purchase_date }}</td>
                 </tr>
             {% endfor %}
         </table>

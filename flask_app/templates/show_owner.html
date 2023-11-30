@@ -1,5 +1,4 @@
-<!-- client_list.html -->
-
+<!-- show_owner.html -->
 {% extends 'base.html' %}
 
 {% block content %}
@@ -7,20 +6,27 @@
     <div class="content">
         <table>
             <tr>
+                <th>Owner ID</th>
                 <th>First Name</th>
                 <th>Last Name</th>
+                <th>Email</th>
                 <th>Date of Birth</th>
                 <th>Phone Number</th>
-                <th>Address</th>
+                <th>Address Line</th>
+                <th>Resident Status</th>
+                <th>Acquisition Date</th>
             </tr>
             {% for owner in owners %}
                 <tr>
+                    <td>{{ owner.owner_id }}</td>
                     <td>{{ owner.first_name }}</td>
                     <td>{{ owner.last_name }}</td>
                     <td>{{ owner.email }}</td>
                     <td>{{ owner.date_of_birth }}</td>
                     <td>{{ owner.phone_number }}</td>
-                    <td>{{ owner.address }}</td>
+                    <td>{{ owner.address_line }}</td>
+                    <td>{{ owner.resident_status }}</td>
+                    <td>{{ owner.acquisition_date }}</td>
                 </tr>
             {% endfor %}
         </table>

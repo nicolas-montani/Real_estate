@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Person</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="first_name">First Name:</label>
+            <input type="text" name="first_name" required>
+        </div>
+        <div class="student">
+            <label for="last_name">Last Name:</label>
+            <input type="text" name="last_name" required>
+        </div>
+        <div class="student">
+            <label for="date_of_birth">Date of Birth:</label>
+            <input type="date" name="date_of_birth" required>
+        </div>
+        <div class="student">
+            <label for="phone_number">Phone Number:</label>
+            <input type="tel" name="phone_number">
+        </div>
+        <div class="student">
+            <label for="email">Email:</label>
+            <input type="email" name="email">
+        </div>
+        <div class="student">
+            <label for="address_id">Address:</label>
+            <select name="address_id" required>
+                <option value="">Select an Address</option>
+                {% for address in addresses %}
+                    <option value="{{ address.address_id }}">{{ address.address_line }}, {{ address.country }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="student">
+            <button type="submit">Create</button>
+        </div>
+    </form>
+{% endblock %}

@@ -107,10 +107,13 @@
             <button onclick="toggleDropdown()" class="dropbtn">Show</button>
             <div id="myDropdown" class="dropdown-content">
                 <a href="{{ url_for('show_property') }}">Property</a>
+                <a href="{{ url_for('show_person') }}">Person</a>
+                <a href="{{ url_for('show_address') }}">Address</a>
                 <a href="{{ url_for('show_client') }}">Client</a>
                 <a href="{{ url_for('show_owner') }}">Owner</a>
                 <a href="{{ url_for('show_agent') }}">Agent</a>
                 <a href="{{ url_for('show_contract') }}">Contract</a>
+                <a href="{{ url_for('show_payment') }}">Payment</a>
                 <a href="{{ url_for('about_us') }}">About us</a>
             </div>
         </div>
@@ -118,10 +121,13 @@
             <button onclick="toggleDropdown()" class="dropbtn">Create</button>
             <div id="myDropdown" class="dropdown-content">
                 <a href="{{ url_for('create_property') }}">Property</a>
+                <a href="{{ url_for('create_person') }}">Person</a>
+                <a href="{{ url_for('create_address') }}">Address</a>
                 <a href="{{ url_for('create_client') }}">Client</a>
                 <a href="{{ url_for('create_owner') }}">Owner</a>
                 <a href="{{ url_for('create_agent') }}">Agent</a>
                 <a href="{{ url_for('create_contract') }}">Contract</a>
+                <a href="{{ url_for('create_payment') }}">Payment</a>
             </div>
         </div>
         <a href="{{ url_for('about_us') }}">About us</a>

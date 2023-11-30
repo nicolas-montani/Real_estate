@@ -1,4 +1,4 @@
-<!-- agent_list.html -->
+<!-- show_agent.html -->
 
 {% extends 'base.html' %}
 
@@ -11,17 +11,20 @@
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
-                <th>Date of Birth</th>
                 <th>Phone Number</th>
+                <th>Employment Date</th>
+                <th>Manages</th>
+                <th>Address</th>
             </tr>
             {% for agent in agents %}
                 <tr>
-                    <td>{{ agent.id }}</td>
+                    <td>{{ agent.agent_id }}</td>
                     <td>{{ agent.first_name }}</td>
                     <td>{{ agent.last_name }}</td>
                     <td>{{ agent.email }}</td>
-                    <td>{{ agent.date_of_birth}}</td>
-                    <td>{{ agent.phone_number}}</td>
+                    <td>{{ agent.phone_number }}</td>
+                    <td>{{ agent.employment_date }}</td>
+                    <td>{{ agent.address_line }}</td>
                 </tr>
             {% endfor %}
         </table>

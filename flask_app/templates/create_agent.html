@@ -1,29 +1,27 @@
-<!-- create_agent.html -->
-
 {% extends 'base.html' %}
 
 {% block content %}
     <h1 class="title">Create Agent</h1>
     <form method="POST">
+        <!-- Dropdown to select an existing person -->
         <div class="form-group">
-            <label for="first_name">First Name:</label>
-            <input type="text" name="first_name" id="first_name" required>
+            <label for="person_id">Select Person:</label>
+            <select name="person_id" id="person_id" required>
+                <option value="">--Select a Person--</option>
+                {% for person in persons %}
+                    <option value="{{ person.person_id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Additional fields for agent-specific attributes -->
+        <div class="form-group">
+            <label for="employment_date">Employment Date:</label>
+            <input type="date" name="employment_date" id="employment_date" required>
         </div>
         <div class="form-group">
-            <label for="last_name">Last Name:</label>
-            <input type="text" name="last_name" id="last_name" required>
-        </div>
-        <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" name="email" id="email" required>
-        </div>
-        <div class="form-group">
-            <label for="date_of_birth">Date of Birth:</label>
-            <input type="date" name="date_of_birth" id="date_of_birth">
-        </div>
-        <div class="form-group">
-            <label for="phone_number">Phone Number:</label>
-            <input type="tel" name="phone_number" id="phone_number">
+            <label for="manages">Manages (Agent ID):</label>
+            <input type="number" name="manages" id="manages">
         </div>
         <div class="form-group">
             <button type="submit">Create Agent</button>

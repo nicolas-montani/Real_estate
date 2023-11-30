@@ -1,33 +1,27 @@
-<!-- create_contract.html -->
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1 class="title">Create Contract</h1>
-    <div class="content">
-        <form method="POST">
-            <label for="property_id">Property ID:</label>
-            <input type="text" name="property_id" id="property_id" required><br>
-
+    <h1 class="title">Create Contract</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="sign_date">Sign Date:</label>
+            <input type="date" name="sign_date" id="sign_date" required>
+        </div>
+        <div class="student">
             <label for="agent_id">Agent ID:</label>
-            <input type="text" name="agent_id" id="agent_id" required><br>
-
+            <input type="number" name="agent_id" id="agent_id" required>
+        </div>
+        <div class="student">
             <label for="client_id">Client ID:</label>
-            <input type="text" name="client_id" id="client_id" required><br>
-
-            <label for="owner_id">Owner ID:</label>
-            <input type="text" name="owner_id" id="owner_id" required><br>
-
-            <label for="contract_type">Contract Type:</label>
-            <input type="text" name="contract_type" id="contract_type" required><br>
-
-            <label for="start_date">Start Date:</label>
-            <input type="date" name="start_date" id="start_date" required><br>
-
-            <label for="end_date">End Date:</label>
-            <input type="date" name="end_date" id="end_date"><br>
-
-            <input type="submit" value="Create Contract">
-        </form>
-    </div>
+            <input type="number" name="client_id" id="client_id" required>
+        </div>
+        <div class="student">
+            <label for="property_id">Property ID:</label>
+            <input type="number" name="property_id" id="property_id" required>
+        </div>
+        <div class="student">
+            <button type="submit">Create Contract</button>
+        </div>
+    </form>
     <a href="{{ url_for('show_contract') }}">Back to Contracts</a>
 {% endblock %}
