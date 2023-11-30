@@ -31,6 +31,7 @@ def setup_db():
             location VARCHAR(255) NOT NULL,
             size INTEGER NOT NULL,
             rooms INTEGER NOT NULL,
+            price INTEGER NOT NULL,
             building_year INTEGER NOT NULL
         );
     ''')
@@ -115,11 +116,11 @@ def seed_db():
 
         # Insert data into the properties table
         cur.execute('''
-        INSERT INTO properties (location, size, rooms, building_year)
+        INSERT INTO properties (location, size, rooms, price, building_year)
         VALUES
-        ('123 Main St', 1000, 3, 1990),
-        ('456 Elm St', 1500, 4, 1970),
-        ('789 Maple St', 2000, 5, 1985);
+        ('123 Main St', 1000, 3, 200000, 1990),
+        ('456 Elm St', 1500, 4, 200000, 1970),
+        ('789 Maple St', 2000, 5, 200000, 1985);
         ''')
 
         # Insert data into the clients table
@@ -252,11 +253,12 @@ def create_property():
         location = request.form['location']
         size = request.form['size']
         rooms = request.form['rooms']
+        price = request.form['price']
         building_year = request.form['building_year']
         
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('INSERT INTO properties (location, size, rooms, building_year) VALUES (%s, %s, %s, %s)',
+        cur.execute('INSERT INTO properties (location, size, rooms, price, building_year) VALUES (%s, %s, %s, %s)',
                     (location, size, rooms, building_year))
         conn.commit()
         cur.close()
