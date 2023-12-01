@@ -9,7 +9,7 @@
             <select name="person_id" id="person_id" required>
                 <option value="">--Select a Person--</option>
                 {% for person in persons %}
-                    <option value="{{ person.person_id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                    <option value="{{ person[0] }}">{{ person[1] }} {{ person[2] }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -18,10 +18,6 @@
         <div class="form-group">
             <label for="employment_date">Employment Date:</label>
             <input type="date" name="employment_date" id="employment_date" required>
-        </div>
-        <div class="form-group">
-            <label for="manages">Manages (Agent ID):</label>
-            <input type="number" name="manages" id="manages">
         </div>
         <div class="form-group">
             <button type="submit">Create Agent</button>

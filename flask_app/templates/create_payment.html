@@ -16,7 +16,7 @@
             <select name="contract_id" required>
                 <option value="">Select a Contract</option>
                 {% for contract in contracts %}
-                    <option value="{{ contract.contract_id }}">Contract #{{ contract.contract_id }}</option>
+                    <option value="{{ contract[0] }}">Contract #{{ contract[0] }}</option>
                 {% endfor %}
             </select>
         </div>

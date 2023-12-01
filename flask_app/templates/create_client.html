@@ -9,7 +9,7 @@
             <select name="person_id" id="person_id" required>
                 <option value="">--Select a Person--</option>
                 {% for person in persons %}
-                    <option value="{{ person.person_id }}">{{ person.first_name }} {{ person.last_name }}</option>
+                    <option value="{{ person[0] }}">{{ person[1] }} {{ person[2] }}</option>
                 {% endfor %}
             </select>
         </div>

@@ -172,7 +172,7 @@ def seed_db():
             ('Peter', 'Pan', '1986-06-04', '2223334444', 'peter@example.com', 2),
             ('Dorothy', 'Gale', '1987-07-04', '3334445555', 'dorothy@example.com', 3),
         ]
-        cur.executemany('INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s, %s)', person_values)
+        cur.executemany('INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s)', person_values)
 
         # Insert data into the property table
         property_values = [
@@ -459,141 +459,83 @@ def create_person():
 # create owner
 @app.route('/create_owner', methods=['GET', 'POST'])
 def create_owner():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Fetch persons for the dropdown
+    cur.execute('SELECT person_id, first_name, last_name FROM person;')
+    persons = cur.fetchall()
+
     if request.method == 'POST':
-        # Person details
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        date_of_birth = request.form['date_of_birth']
-        phone_number = request.form['phone_number']
-        email = request.form['email']
-        address_id = request.form['address_id']  # Dropdown for selecting an existing address
-        
-        # Owner details
+        person_id = request.form['person_id']
         resident_status = request.form['resident_status']
         acquisition_date = request.form['acquisition_date']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        # Insert into person table and return the new person_id
-        cur.execute('''
-            INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) 
-            VALUES (%s, %s, %s, %s, %s, %s) RETURNING person_id
-        ''', (first_name, last_name, date_of_birth, phone_number, email, address_id))
-        person_id = cur.fetchone()[0]
-
-        # Insert into owner table with the new person_id
+        # Insert into owner table with the existing person_id
         cur.execute('''
             INSERT INTO owner (person_id, resident_status, acquisition_date) 
             VALUES (%s, %s, %s)
         ''', (person_id, resident_status, acquisition_date))
         conn.commit()
-        cur.close()
-        conn.close()
 
-        return redirect(url_for('show_owner'))
-    
-    # Provide a list of addresses for the dropdown
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT address_id, address_line FROM address;')
-    addresses = cur.fetchall()
     cur.close()
     conn.close()
-    
-    return render_template('create_owner.html', addresses=addresses)
+
+    return render_template('create_owner.html', persons=persons)
+
 
 # create agent
 @app.route('/create_agent', methods=['GET', 'POST'])
 def create_agent():
-    if request.method == 'POST':
-        # Person details
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        date_of_birth = request.form['date_of_birth']
-        phone_number = request.form['phone_number']
-        email = request.form['email']
-        address_id = request.form['address_id']  # Dropdown for selecting an existing address
-        
-        # Agent details
-        employment_date = request.form['employment_date']
-        manages = request.form['manages']  # This can be an optional field
-
-        conn = get_db_connection()
-        cur = conn.cursor()
-        # Insert into person table and return the new person_id
-        cur.execute('''
-            INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) 
-            VALUES (%s, %s, %s, %s, %s, %s) RETURNING person_id
-        ''', (first_name, last_name, date_of_birth, phone_number, email, address_id))
-        person_id = cur.fetchone()[0]
-
-        # Insert into agent table with the new person_id
-        cur.execute('''
-            INSERT INTO agent (person_id, employment_date, manages) 
-            VALUES (%s, %s, %s)
-        ''', (person_id, employment_date, manages if manages else None))
-        conn.commit()
-        cur.close()
-        conn.close()
-
-        return redirect(url_for('show_agent'))
-
-    # Provide a list of addresses and agents for the dropdown
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT address_id, address_line FROM address;')
-    addresses = cur.fetchall()
-    cur.execute('SELECT agent_id, first_name, last_name FROM agent JOIN person ON agent.person_id = person.person_id;')
-    managing_agents = cur.fetchall()
+
+    if request.method == 'POST':
+        person_id = request.form['person_id']
+        employment_date = request.form['employment_date']
+
+        # Insert into agent table with the existing person_id
+        cur.execute('''
+            INSERT INTO agent (person_id, employment_date) 
+            VALUES (%s, %s)
+        ''', (person_id, employment_date))
+        conn.commit()
+
+    # Fetch persons for the dropdown
+    cur.execute('SELECT person_id, first_name, last_name FROM person;')
+    persons = cur.fetchall()
+
     cur.close()
     conn.close()
 
-    return render_template('create_agent.html', addresses=addresses, managing_agents=managing_agents)
+    return render_template('create_agent.html', persons=persons)
 
 # create client
 @app.route('/create_client', methods=['GET', 'POST'])
 def create_client():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
+    # Fetch persons for the dropdown
+    cur.execute('SELECT person_id, first_name, last_name FROM person;')
+    persons = cur.fetchall()
+
     if request.method == 'POST':
-        # Person details
-        first_name = request.form['first_name']
-        last_name = request.form['last_name']
-        date_of_birth = request.form['date_of_birth']
-        phone_number = request.form['phone_number']
-        email = request.form['email']
-        address_id = request.form['address_id']  # Dropdown for selecting an existing address
-        
-        # Client details
+        person_id = request.form['person_id']
         purchase_date = request.form['purchase_date']
 
-        conn = get_db_connection()
-        cur = conn.cursor()
-        # Insert into person table and return the new person_id
-        cur.execute('''
-            INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) 
-            VALUES (%s, %s, %s, %s, %s, %s) RETURNING person_id
-        ''', (first_name, last_name, date_of_birth, phone_number, email, address_id))
-        person_id = cur.fetchone()[0]
-
-        # Insert into client table with the new person_id
+        # Insert into client table with the existing person_id
         cur.execute('''
             INSERT INTO client (person_id, purchase_date) 
             VALUES (%s, %s)
         ''', (person_id, purchase_date))
         conn.commit()
-        cur.close()
-        conn.close()
 
-        return redirect(url_for('show_client'))
-
-    # Provide a list of addresses for the dropdown
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT address_id, address_line FROM address;')
-    addresses = cur.fetchall()
     cur.close()
     conn.close()
 
-    return render_template('create_client.html', addresses=addresses)
+    return render_template('create_client.html', persons=persons)
+
 
 # create property
 @app.route('/create_property', methods=['GET', 'POST'])
@@ -663,28 +605,24 @@ def create_contract():
 # create payment
 @app.route('/create_payment', methods=['GET', 'POST'])
 def create_payment():
+    conn = get_db_connection()
+    cur = conn.cursor()
+
     if request.method == 'POST':
         amount = request.form['amount']
         date = request.form['date']
         contract_id = request.form['contract_id']
         
-        conn = get_db_connection()
-        cur = conn.cursor()
         cur.execute('''
             INSERT INTO payment (amount, date, contract_id) 
             VALUES (%s, %s, %s)
         ''', (amount, date, contract_id))
         conn.commit()
-        cur.close()
-        conn.close()
-        
-        return redirect(url_for('show_payment'))
 
-    # Fetching list of contracts for the dropdown
-    conn = get_db_connection()
-    cur = conn.cursor()
+    # Fetch contracts for the dropdown
     cur.execute('SELECT contract_id FROM contract;')
     contracts = cur.fetchall()
+
     cur.close()
     conn.close()
 
