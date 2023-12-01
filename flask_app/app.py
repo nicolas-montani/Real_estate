@@ -168,11 +168,11 @@ def seed_db():
 
         # Insert data into the person table
         person_values = [
-            (1,'Alice', 'Liddell', '1985-05-04', '1112223333', 'alice@example.com', 1),
-            (2,'Peter', 'Pan', '1986-06-04', '2223334444', 'peter@example.com', 2),
-            (3,'Dorothy', 'Gale', '1987-07-04', '3334445555', 'dorothy@example.com', 3),
+            ('Alice', 'Liddell', '1985-05-04', '1112223333', 'alice@example.com', 1),
+            ('Peter', 'Pan', '1986-06-04', '2223334444', 'peter@example.com', 2),
+            ('Dorothy', 'Gale', '1987-07-04', '3334445555', 'dorothy@example.com', 3),
         ]
-        cur.executemany('INSERT INTO person (person_id, first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s, %s)', person_values)
+        cur.executemany('INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s, %s)', person_values)
 
         # Insert data into the property table
         property_values = [
@@ -312,7 +312,6 @@ def show_agent():
     conn.close()
     return render_template('show_agent.html', agents=agents)
 
-
 # show client
 @app.route('/show_client')
 def show_client():
@@ -340,13 +339,19 @@ def show_property():
     cur.execute('SELECT * FROM property;')
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
-    properties = [dict(zip(columns, row)) for row in rows]
 
-    logging.error("test")
-    logging.error(f"{properties}")
+    # Convert Decimal to String
+    properties = []
+    for row in rows:
+        row_dict = dict(zip(columns, row))
+        row_dict['area_size'] = str(row_dict['area_size'])
+        row_dict['price'] = str(row_dict['price'])
+        properties.append(row_dict)
+
     cur.close()
     conn.close()
     return render_template('show_property.html', properties=properties)
+
 
 # show contract
 @app.route('/show_contract')

@@ -28,7 +28,7 @@
             <select name="address_id" required>
                 <option value="">Select an Address</option>
                 {% for address in addresses %}
-                    <option value="{{ address.address_id }}">{{ address.address_line }}, {{ address.country }}</option>
+                    <option value="{{ address[0] }}">{{ address[1] }}</option>
                 {% endfor %}
             </select>
         </div>
