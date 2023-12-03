@@ -243,6 +243,12 @@ def seed_db():
 
 
 # ------- show stuff -------
+
+# show about-us
+@app.route('/about-us')
+def about_us():
+    return render_template('about_us.html')
+
 # show address
 @app.route('/show_address')
 def show_address():
@@ -397,10 +403,7 @@ def show_payment():
     return render_template('show_payment.html', payments=payments)
 
 
-# show about-us
-@app.route('/about-us')
-def about_us():
-    return render_template('about_us.html')
+
 
 
 # ------- create stuff --------

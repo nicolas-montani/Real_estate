@@ -11,7 +11,7 @@ It serves as a centralized solution for agents to store all relevant information
 
 2. To **start the application** navigate to Real_estate/flask_app and run the following command:
 ```bash
-docker-compose up --build
+docker-compose up --build -d
 ```
 
 - Stop the allication using ^C in your terminal!
