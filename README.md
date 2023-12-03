@@ -14,8 +14,6 @@ It serves as a centralized solution for agents to store all relevant information
 docker-compose up --build -d
 ```
 
-- Stop the allication using ^C in your terminal!
-
 - (If you need (you don't have to) to stop the container run the following command:)
 ```bash
 docker-compose down  

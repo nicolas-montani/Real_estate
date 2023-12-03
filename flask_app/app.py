@@ -244,6 +244,12 @@ def seed_db():
 
 # ------- show stuff -------
 
+# show home
+@app.route('/')
+def home():
+    #redirect to about-us
+    return redirect('/about-us ')
+
 # show about-us
 @app.route('/about-us')
 def about_us():
