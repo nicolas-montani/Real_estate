@@ -83,7 +83,16 @@ def setup_db():
         );
     ''')
 
-    # Create property table
+    # create location table
+    cur.execute('''
+            CREATE TABLE IF NOT EXISTS location (
+                location_id SERIAL PRIMARY KEY,
+                latitude DECIMAL NOT NULL,
+                longitude DECIMAL NOT NULL
+            );
+        ''')
+
+    # create property table with a foreign key reference to the location table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS property (
             property_id SERIAL PRIMARY KEY,
@@ -91,7 +100,8 @@ def setup_db():
             building_year INTEGER,
             area_size DECIMAL,
             price DECIMAL NOT NULL,
-            location VARCHAR(255)
+            location_id INTEGER, -- Foreign key reference to location table
+            FOREIGN KEY (location_id) REFERENCES location(location_id)
         );
     ''')
 
@@ -174,14 +184,6 @@ def seed_db():
         ]
         cur.executemany('INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s)', person_values)
 
-        # Insert data into the property table
-        property_values = [
-            (3, 1990, 100.0, 200000.0, '123 Main St'),
-            (4, 1980, 150.0, 250000.0, '456 Side St'),
-            (5, 2000, 200.0, 300000.0, '789 Road Ave'),
-        ]
-        cur.executemany('INSERT INTO property (number_of_rooms, building_year, area_size, price, location) VALUES (%s, %s, %s, %s, %s)', property_values)
-
         # Insert data into the owner table
         owner_values = [
             (1, 'Permanent', '2001-01-01'),
@@ -206,13 +208,32 @@ def seed_db():
         ]
         cur.executemany('INSERT INTO client (person_id, purchase_date) VALUES (%s, %s)', client_values)
 
-        # Insert data into the contract table
+        # Insert sample data into the location table
+        location_values = [
+            (40.712776, -74.005974),  # Latitude and longitude for New York City
+            (34.052235, -118.243683),  # Latitude and longitude for Los Angeles
+            (51.507351, -0.127758),    # Latitude and longitude for London
+        ]
+        cur.executemany('INSERT INTO location (latitude, longitude) VALUES (%s, %s)', location_values)
+
+
+        # Insert data into the property table
+        # Assuming the first three location_ids are for the locations inserted above
+        property_values = [
+            (3, 1990, 100.0, 200000.0, 1),
+            (4, 1980, 150.0, 250000.0, 2),
+            (5, 2000, 200.0, 300000.0, 3),
+        ]
+        cur.executemany('INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id) VALUES (%s, %s, %s, %s, %s)', property_values)
+
+         # Insert data into the contract table
         contract_values = [
             ('2022-01-01', 1, 1, 1),
             ('2022-02-01', 2, 2, 2),
             ('2022-03-01', 3, 3, 3),
         ]
         cur.executemany('INSERT INTO contract (sign_date, agent_id, client_id, property_id) VALUES (%s, %s, %s, %s)', contract_values)
+
 
         # Insert data into the payment table
         payment_values = [
@@ -342,30 +363,39 @@ def show_client():
     conn.close()
     return render_template('show_client.html', clients=clients)
 
+# show location
+@app.route('/show_location')
+def show_location():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT * FROM location;')
+    rows = cur.fetchall()
+    columns = [desc[0] for desc in cur.description]
+    locations = [dict(zip(columns, row)) for row in rows]
+    cur.close()
+    conn.close()
+    return render_template('show_location.html', locations=locations)
+
 
 # show property
 @app.route('/show_property')
 def show_property():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT * FROM property;')
+    cur.execute('''
+        SELECT p.*, l.latitude, l.longitude 
+        FROM property p
+        JOIN location l ON p.location_id = l.location_id;
+    ''')
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
-
-    # Convert Decimal to String
-    properties = []
-    for row in rows:
-        row_dict = dict(zip(columns, row))
-        row_dict['area_size'] = str(row_dict['area_size'])
-        row_dict['price'] = str(row_dict['price'])
-        properties.append(row_dict)
-
+    properties = [dict(zip(columns, row)) for row in rows]
     cur.close()
     conn.close()
     return render_template('show_property.html', properties=properties)
 
 
-# show contract
+
 @app.route('/show_contract')
 def show_contract():
     conn = get_db_connection()
@@ -374,13 +404,14 @@ def show_contract():
         SELECT c.contract_id, c.sign_date, 
                a.first_name AS agent_first_name, a.last_name AS agent_last_name, 
                cl.first_name AS client_first_name, cl.last_name AS client_last_name, 
-               p.property_id, p.location
+               p.property_id, l.latitude, l.longitude
         FROM contract c
         JOIN agent ag ON c.agent_id = ag.agent_id
         JOIN person a ON ag.person_id = a.person_id
         JOIN client clt ON c.client_id = clt.client_id
         JOIN person cl ON clt.person_id = cl.person_id
-        JOIN property p ON c.property_id = p.property_id;
+        JOIN property p ON c.property_id = p.property_id
+        JOIN location l ON p.location_id = l.location_id;
     ''')
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
@@ -388,8 +419,6 @@ def show_contract():
     cur.close()
     conn.close()
     return render_template('show_contract.html', contracts=contracts)
-
-
 
 # show payment
 @app.route('/show_payment')
@@ -437,6 +466,7 @@ def create_address():
 @app.route('/create_person', methods=['GET', 'POST'])
 def create_person():
     if request.method == 'POST':
+        #person_id = request.form['person_id']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         date_of_birth = request.form['date_of_birth']
@@ -545,35 +575,54 @@ def create_client():
 
     return render_template('create_client.html', persons=persons)
 
+# create location
+@app.route('/create_location', methods=['GET', 'POST'])
+def create_location():
+    if request.method == 'POST':
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
+        cur.execute('INSERT INTO location (latitude, longitude) VALUES (%s, %s)',
+                    (latitude, longitude))
+        conn.commit()
+        cur.close()
+        conn.close()
+        
+        return redirect(url_for('show_location'))  # Redirect to a page that shows all locations
+    return render_template('create_location.html')
+
+
+
 
 # create property
 @app.route('/create_property', methods=['GET', 'POST'])
 def create_property():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT location_id, latitude, longitude FROM location;')
+    locations = cur.fetchall()
+    
     if request.method == 'POST':
-        # Fetch form data
-        location = request.form['location']
-        area_size = request.form['area_size']
-        num_rooms = request.form['number_of_rooms']
-        price = request.form['price']
+        number_of_rooms = request.form['number_of_rooms']
         building_year = request.form['building_year']
+        area_size = request.form['area_size']
+        price = request.form['price']
+        location_id = request.form['location_id']  # Get location_id from the form
         
-        # Connect to the database
-        conn = get_db_connection()
-        cur = conn.cursor()
-
-        # Insert data into the correct table and columns
         cur.execute('''
-            INSERT INTO property (location, area_size, number_of_rooms, price, building_year) 
+            INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id) 
             VALUES (%s, %s, %s, %s, %s)
-        ''', (location, area_size, num_rooms, price, building_year))
-
-        # Commit transaction and close connection
+        ''', (number_of_rooms, building_year, area_size, price, location_id))
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect(url_for('show_property'))
-    return render_template('create_property.html')
+    cur.close()
+    conn.close()
+    return render_template('create_property.html', locations=locations)
 
 
 # create contract

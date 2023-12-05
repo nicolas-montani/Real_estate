@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">All Locations</h1>
+    <div class="content">
+        <table>
+            <tr>
+                <th>Location ID</th>
+                <th>Latitude</th>
+                <th>Longitude</th>
+            </tr>
+            {% for location in locations %}
+                <tr>
+                    <td>{{ location.location_id }}</td>
+                    <td>{{ location.latitude }}</td>
+                    <td>{{ location.longitude }}</td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

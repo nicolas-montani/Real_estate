@@ -1,0 +1,19 @@
+<!-- create_location.html -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1 class="title">Create Location</h1><br>
+    <form method="POST">
+        <div class="student">
+            <label for="latitude">Latitude:</label>
+            <input type="text" name="latitude" required>
+        </div>
+        <div class="student">
+            <label for="longitude">Longitude:</label>
+            <input type="text" name="longitude" required>
+        </div>
+        <div class="student">
+            <button type="submit">Create Location</button>
+        </div>
+    </form>
+{% endblock %}

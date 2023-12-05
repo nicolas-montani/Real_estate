@@ -11,7 +11,7 @@
                 <th>Building Year</th>
                 <th>Area Size</th>
                 <th>Price</th>
-                <th>Location</th>
+                <th>Location (Lat, Long)</th>
             </tr>
             {% for property in properties %}
                 <tr>
@@ -20,7 +20,7 @@
                     <td>{{ property.building_year }}</td>
                     <td>{{ property.area_size }}</td>
                     <td>{{ property.price }}</td>
-                    <td>{{ property.location }}</td>
+                    <td>{{ property.latitude }}, {{ property.longitude }}</td>
                 </tr>
             {% endfor %}
         </table>
