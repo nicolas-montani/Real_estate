@@ -1,30 +1,38 @@
+
+<!-- create_property.html -->
 {% extends 'base.html' %}
 
 {% block content %}
     <h1 class="title">Create Property</h1><br>
     <form method="POST">
         <div class="student">
-            <label for="location">Location:</label>
-            <input type="text" name="location" required>
-        </div>
-        <div class="student">
-            <label for="area_size">Size (square meters):</label>
-            <input type="number" name="area_size" required>  <!-- Corrected the name attribute -->
-        </div>
-        <div class="student">
             <label for="number_of_rooms">Number of Rooms:</label>
-            <input type="number" name="number_of_rooms" required>  <!-- Corrected the name attribute -->
-        </div>
-        <div class="student">
-            <label for="price">Price:</label>
-            <input type="number" name="price" required>
+            <input type="number" name="number_of_rooms" required>
         </div>
         <div class="student">
             <label for="building_year">Building Year:</label>
             <input type="number" name="building_year" required>
         </div>
         <div class="student">
-            <button type="submit">Create</button>
+            <label for="area_size">Size (square meters):</label>
+            <input type="number" name="area_size" required>
+        </div>
+        <div class="student">
+            <label for="price">Price:</label>
+            <input type="number" name="price" required>
+        </div>
+        <div class="student">
+            <label for="location_id">Location:</label>
+            <select name="location_id" required>
+                {% for location in locations %}
+                    <option value="{{ location.location_id }}">
+                        {{ location.latitude }}, {{ location.longitude }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="student">
+            <button type="submit">Create Property</button>
         </div>
     </form>
 {% endblock %}
