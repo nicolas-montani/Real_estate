@@ -25,8 +25,8 @@
             <label for="location_id">Location:</label>
             <select name="location_id" required>
                 {% for location in locations %}
-                    <option value="{{ location.location_id }}">
-                        {{ location.latitude }}, {{ location.longitude }}
+                    <option value="{{ location[0] }}"> 
+                        {{ location[1] }}, {{ location[2] }} 
                     </option>
                 {% endfor %}
             </select>
