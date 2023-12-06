@@ -385,10 +385,11 @@ def show_property():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        SELECT p.*, o.owner_name, l.latitude, l.longitude  -- Assuming there's an owner_name column in owner table
+        SELECT p.*, per.first_name, per.last_name, l.latitude, l.longitude
         FROM property p
         JOIN location l ON p.location_id = l.location_id
-        JOIN owner o ON p.owner_id = o.owner_id;  -- Join with owner table
+        JOIN owner o ON p.owner_id = o.owner_id
+        JOIN person per ON o.person_id = per.person_id;  -- Join with person table to get owner name
     ''')
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
@@ -396,7 +397,6 @@ def show_property():
     cur.close()
     conn.close()
     return render_template('show_property.html', properties=properties)
-
 
 
 
