@@ -269,7 +269,7 @@ def seed_db():
         cur.executemany('INSERT INTO contract (sign_date, agent_id, client_id, property_id) VALUES (%s, %s, %s, %s)', contract_values)
 
 
-        # Insert data into the payment table
+        # insert data into the payment table
         payment_values = [
             (100000.0, '2022-01-05', 1),
             (150000.0, '2022-02-05', 2),
@@ -305,11 +305,10 @@ def seed_db():
 
 
 # ------- show stuff -------
-
 # show home
 @app.route('/')
 def home():
-    #redirect to about-us
+    # redirect to about-us
     return redirect('/about-us ')
 
 # show about-us
@@ -437,8 +436,7 @@ def show_property():
     conn.close()
     return render_template('show_property.html', properties=properties)
 
-
-
+# show contract
 @app.route('/show_contract')
 def show_contract():
     conn = get_db_connection()
@@ -481,9 +479,6 @@ def show_payment():
     return render_template('show_payment.html', payments=payments)
 
 
-
-
-
 # ------- create stuff --------
 # create address
 @app.route('/create_address', methods=['GET', 'POST'])
@@ -509,13 +504,12 @@ def create_address():
 @app.route('/create_person', methods=['GET', 'POST'])
 def create_person():
     if request.method == 'POST':
-        #person_id = request.form['person_id']
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         date_of_birth = request.form['date_of_birth']
         phone_number = request.form['phone_number']
         email = request.form['email']
-        address_id = request.form['address_id']  # Make sure this is a valid ID from the address table
+        address_id = request.form['address_id'] 
         
         conn = get_db_connection()
         cur = conn.cursor()
@@ -528,7 +522,7 @@ def create_person():
         conn.close()
         
         return redirect(url_for('show_person'))
-    # Provide a list of addresses for the dropdown
+  
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT address_id, address_line FROM address;')
@@ -542,7 +536,7 @@ def create_person():
 @app.route('/create_owner', methods=['GET', 'POST'])
 def create_owner():
     if request.method == 'POST':
-        person_id = request.form['person_id']  # Make sure this is a valid ID from the person table
+        person_id = request.form['person_id'] 
         resident_status = request.form['resident_status']
         acquisition_date = request.form['acquisition_date']
         
@@ -558,7 +552,6 @@ def create_owner():
         
         return redirect(url_for('show_owner'))
 
-    # Provide a list of persons for the dropdown
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
@@ -578,14 +571,12 @@ def create_agent():
         person_id = request.form['person_id']
         employment_date = request.form['employment_date']
 
-        # Insert into agent table with the existing person_id
         cur.execute('''
             INSERT INTO agent (person_id, employment_date) 
             VALUES (%s, %s)
         ''', (person_id, employment_date))
         conn.commit()
 
-    # Fetch persons for the dropdown
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
     persons = cur.fetchall()
 
@@ -600,7 +591,6 @@ def create_client():
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # Fetch persons for the dropdown
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
     persons = cur.fetchall()
 
@@ -608,7 +598,6 @@ def create_client():
         person_id = request.form['person_id']
         purchase_date = request.form['purchase_date']
 
-        # Insert into client table with the existing person_id
         cur.execute('''
             INSERT INTO client (person_id, purchase_date) 
             VALUES (%s, %s)
@@ -635,7 +624,7 @@ def create_location():
         cur.close()
         conn.close()
         
-        return redirect(url_for('show_location'))  # Redirect to a page that shows all locations
+        return redirect(url_for('show_location')) 
     return render_template('create_location.html')
 
 # create property
@@ -659,9 +648,8 @@ def create_property():
         area_size = request.form['area_size']
         price = request.form['price']
         location_id = request.form['location_id']
-        owner_id = request.form['owner_id']  # Capture owner_id from the form
+        owner_id = request.form['owner_id'] 
 
-        # Include owner_id in the INSERT query
         cur.execute('''
             INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) 
             VALUES (%s, %s, %s, %s, %s, %s)
@@ -698,7 +686,6 @@ def create_contract():
         
         return redirect(url_for('show_contract'))
 
-    # Fetching lists of agents, clients, and properties for the dropdowns
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT agent_id, first_name, last_name FROM agent JOIN person ON agent.person_id = person.person_id;')
@@ -729,7 +716,6 @@ def create_payment():
         ''', (amount, date, contract_id))
         conn.commit()
 
-    # Fetch contracts for the dropdown
     cur.execute('SELECT contract_id FROM contract;')
     contracts = cur.fetchall()
 

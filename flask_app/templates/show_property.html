@@ -12,7 +12,7 @@
                 <th>Area Size</th>
                 <th>Price</th>
                 <th>Location (Lat, Long)</th>
-                <th>Owner</th> <!-- New column for owner -->
+                <th>Owner</th> 
             </tr>
             {% for property in properties %}
                 <tr>
@@ -22,7 +22,7 @@
                     <td>{{ property.area_size }}</td>
                     <td>{{ property.price }}</td>
                     <td>{{ property.latitude }}, {{ property.longitude }}</td>
-                    <td>{{ property.owner_id }}</td> <!-- Display owner name -->
+                    <td>{{ property.owner_id }}</td> 
                 </tr>
             {% endfor %}
         </table>

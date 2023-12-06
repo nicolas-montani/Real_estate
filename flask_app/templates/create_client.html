@@ -3,7 +3,6 @@
 {% block content %}
     <h1 class="title">Create Client</h1>
     <form method="POST">
-        <!-- Dropdown to select an existing person -->
         <div class="form-group">
             <label for="person_id">Select Person:</label>
             <select name="person_id" id="person_id" required>
@@ -13,8 +12,6 @@
                 {% endfor %}
             </select>
         </div>
-
-        <!-- Additional field for client-specific attribute -->
         <div class="form-group">
             <label for="purchase_date">Purchase Date:</label>
             <input type="date" name="purchase_date" id="purchase_date" required>
