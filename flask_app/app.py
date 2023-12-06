@@ -1,25 +1,30 @@
+# ----- imports -----
 import os
 import psycopg2
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 from flask import Flask, render_template, request, url_for, redirect
 import logging
 
-basedir = os.path.abspath(os.path.dirname(__file__)) # get the base directory of the project
-app = Flask(__name__) # create the Flask app
-app.logger.setLevel(logging.DEBUG)
 
-DATABASE_NAME = 'real_estate_db' # name of the database to connect to
+# ----- set-up -----
+basedir = os.path.abspath(os.path.dirname(__file__)) # get the base directory
+app = Flask(__name__) # create the flask app
+app.logger.setLevel(logging.DEBUG) # set the logging level to DEBUG
 
-# Connection parameters, make sure to change these to your own settings
+
+# connection parameters
+DATABASE_NAME = 'real_estate_db' # name of the database 
 POSTGRES_URL = 'postgresql://real_estate_user:real_estate_password@db:5432'
 DATABASE_URL = POSTGRES_URL + '/' + DATABASE_NAME
 
-# Function to open a connection to the database
+
+# ----- definitions -----
+# function to open a connection to the database
 def get_db_connection():
     conn = psycopg2.connect(DATABASE_URL)
     return conn
 
-# Function to create the database tables
+# function to create the database tables
 def setup_db():
     # Create the database
     create_database(DATABASE_NAME)
@@ -137,8 +142,7 @@ def setup_db():
     conn.close()
 
 
-
-# Function to create a new database in PostgreSQL
+# function to create a new database in PostgreSQL
 def create_database(db_name):
     # Connection string to connect with the default 'postgres' database
     conn_string = POSTGRES_URL + '/postgres'
