@@ -35,10 +35,10 @@
             <label for="owner_id">Owner:</label>
             <select name="owner_id" id="owner_id" required>
                 {% for owner in owners %}
-                    <option value="{{ owner[0] }}">{{ owner.owner_name }}</option>
+                    <option value="{{ owner[0] }}">{{ owner[1] }}</option>
                 {% endfor %}
             </select>
-        </div>
+        </div>        
         <div class="student">
             <button type="submit">Create Property</button>
         </div>

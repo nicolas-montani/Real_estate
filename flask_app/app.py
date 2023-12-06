@@ -606,18 +606,27 @@ def create_property():
     cur = conn.cursor()
     cur.execute('SELECT location_id, latitude, longitude FROM location;')
     locations = cur.fetchall()
+
+    cur.execute('''
+        SELECT o.owner_id, p.first_name || ' ' || p.last_name AS owner_name
+        FROM owner o
+        JOIN person p ON o.person_id = p.person_id;
+    ''')
+    owners = cur.fetchall()
     
     if request.method == 'POST':
         number_of_rooms = request.form['number_of_rooms']
         building_year = request.form['building_year']
         area_size = request.form['area_size']
         price = request.form['price']
-        location_id = request.form['location_id']  # Get location_id from the form
-        
+        location_id = request.form['location_id']
+        owner_id = request.form['owner_id']  # Capture owner_id from the form
+
+        # Include owner_id in the INSERT query
         cur.execute('''
-            INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id) 
-            VALUES (%s, %s, %s, %s, %s)
-        ''', (number_of_rooms, building_year, area_size, price, location_id))
+            INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (number_of_rooms, building_year, area_size, price, location_id, owner_id))
         conn.commit()
         cur.close()
         conn.close()
@@ -625,7 +634,8 @@ def create_property():
         return redirect(url_for('show_property'))
     cur.close()
     conn.close()
-    return render_template('create_property.html', locations=locations)
+    return render_template('create_property.html', locations=locations, owners=owners)
+
 
 
 # create contract
