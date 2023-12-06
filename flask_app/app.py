@@ -500,36 +500,34 @@ def create_person():
     return render_template('create_person.html', addresses=addresses)
 
 # create owner
-@app.route('/create_property', methods=['GET', 'POST'])
-def create_property():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute('SELECT location_id, latitude, longitude FROM location;')
-    locations = cur.fetchall()
-    cur.execute('SELECT owner_id, owner_name FROM owner;')  # Fetch owners for the dropdown
-    owners = cur.fetchall()
-
+@app.route('/create_owner', methods=['GET', 'POST'])
+def create_owner():
     if request.method == 'POST':
-        number_of_rooms = request.form['number_of_rooms']
-        building_year = request.form['building_year']
-        area_size = request.form['area_size']
-        price = request.form['price']
-        location_id = request.form['location_id']
-        owner_id = request.form['owner_id']  # Get owner_id from the form
-
+        person_id = request.form['person_id']  # Make sure this is a valid ID from the person table
+        resident_status = request.form['resident_status']
+        acquisition_date = request.form['acquisition_date']
+        
+        conn = get_db_connection()
+        cur = conn.cursor()
         cur.execute('''
-            INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) 
-            VALUES (%s, %s, %s, %s, %s, %s)
-        ''', (number_of_rooms, building_year, area_size, price, location_id, owner_id))
+            INSERT INTO owner (person_id, resident_status, acquisition_date) 
+            VALUES (%s, %s, %s)
+        ''', (person_id, resident_status, acquisition_date))
         conn.commit()
         cur.close()
         conn.close()
         
-        return redirect(url_for('show_property'))
+        return redirect(url_for('show_owner'))
+
+    # Provide a list of persons for the dropdown
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT person_id, first_name, last_name FROM person;')
+    persons = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template('create_property.html', locations=locations, owners=owners)
-
+    
+    return render_template('create_owner.html', persons=persons)
 
 # create agent
 @app.route('/create_agent', methods=['GET', 'POST'])
@@ -600,9 +598,6 @@ def create_location():
         
         return redirect(url_for('show_location'))  # Redirect to a page that shows all locations
     return render_template('create_location.html')
-
-
-
 
 # create property
 @app.route('/create_property', methods=['GET', 'POST'])
