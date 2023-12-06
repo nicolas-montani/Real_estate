@@ -32,6 +32,24 @@
             </select>
         </div>
         <div class="student">
+            <label for="location_id">Location:</label>
+            <select name="location_id" required>
+                {% for location in locations %}
+                    <option value="{{ location[0] }}"> 
+                        {{ location[1] }}, {{ location[2] }} 
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="student">
+            <label for="owner_id">Owner:</label>
+            <select name="owner_id" id="owner_id" required>
+                {% for owner in owners %}
+                    <option value="{{ owner.owner_id }}">{{ owner.owner_name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="student">
             <button type="submit">Create Property</button>
         </div>
     </form>

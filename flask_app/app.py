@@ -101,7 +101,9 @@ def setup_db():
             area_size DECIMAL,
             price DECIMAL NOT NULL,
             location_id INTEGER, -- Foreign key reference to location table
-            FOREIGN KEY (location_id) REFERENCES location(location_id)
+            owner_id INTEGER NOT NULL, -- New column for owner_id
+            FOREIGN KEY (location_id) REFERENCES location(location_id),
+            FOREIGN KEY (owner_id) REFERENCES owner(owner_id) -- Foreign key reference to owner table
         );
     ''')
 
@@ -220,11 +222,11 @@ def seed_db():
         # Insert data into the property table
         # Assuming the first three location_ids are for the locations inserted above
         property_values = [
-            (3, 1990, 100.0, 200000.0, 1),
-            (4, 1980, 150.0, 250000.0, 2),
-            (5, 2000, 200.0, 300000.0, 3),
+            (3, 1990, 100.0, 200000.0, 1, 1),  
+            (4, 1980, 150.0, 250000.0, 2, 2),  
+            (5, 2000, 200.0, 300000.0, 3, 3),  
         ]
-        cur.executemany('INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id) VALUES (%s, %s, %s, %s, %s)', property_values)
+        cur.executemany('INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) VALUES (%s, %s, %s, %s, %s, %s)', property_values)
 
          # Insert data into the contract table
         contract_values = [
@@ -383,9 +385,10 @@ def show_property():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        SELECT p.*, l.latitude, l.longitude 
+        SELECT p.*, o.owner_name, l.latitude, l.longitude  -- Assuming there's an owner_name column in owner table
         FROM property p
-        JOIN location l ON p.location_id = l.location_id;
+        JOIN location l ON p.location_id = l.location_id
+        JOIN owner o ON p.owner_id = o.owner_id;  -- Join with owner table
     ''')
     rows = cur.fetchall()
     columns = [desc[0] for desc in cur.description]
@@ -393,6 +396,7 @@ def show_property():
     cur.close()
     conn.close()
     return render_template('show_property.html', properties=properties)
+
 
 
 
@@ -496,31 +500,35 @@ def create_person():
     return render_template('create_person.html', addresses=addresses)
 
 # create owner
-@app.route('/create_owner', methods=['GET', 'POST'])
-def create_owner():
+@app.route('/create_property', methods=['GET', 'POST'])
+def create_property():
     conn = get_db_connection()
     cur = conn.cursor()
-
-    # Fetch persons for the dropdown
-    cur.execute('SELECT person_id, first_name, last_name FROM person;')
-    persons = cur.fetchall()
+    cur.execute('SELECT location_id, latitude, longitude FROM location;')
+    locations = cur.fetchall()
+    cur.execute('SELECT owner_id, owner_name FROM owner;')  # Fetch owners for the dropdown
+    owners = cur.fetchall()
 
     if request.method == 'POST':
-        person_id = request.form['person_id']
-        resident_status = request.form['resident_status']
-        acquisition_date = request.form['acquisition_date']
+        number_of_rooms = request.form['number_of_rooms']
+        building_year = request.form['building_year']
+        area_size = request.form['area_size']
+        price = request.form['price']
+        location_id = request.form['location_id']
+        owner_id = request.form['owner_id']  # Get owner_id from the form
 
-        # Insert into owner table with the existing person_id
         cur.execute('''
-            INSERT INTO owner (person_id, resident_status, acquisition_date) 
-            VALUES (%s, %s, %s)
-        ''', (person_id, resident_status, acquisition_date))
+            INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) 
+            VALUES (%s, %s, %s, %s, %s, %s)
+        ''', (number_of_rooms, building_year, area_size, price, location_id, owner_id))
         conn.commit()
-
+        cur.close()
+        conn.close()
+        
+        return redirect(url_for('show_property'))
     cur.close()
     conn.close()
-
-    return render_template('create_owner.html', persons=persons)
+    return render_template('create_property.html', locations=locations, owners=owners)
 
 
 # create agent
