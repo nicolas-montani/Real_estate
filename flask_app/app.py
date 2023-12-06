@@ -319,109 +319,174 @@ def about_us():
 # show address
 @app.route('/show_address')
 def show_address():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all address entries
     cur.execute('SELECT * FROM address;')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     address_entries = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_address.html', address_entries=address_entries)
 
 
 # show person
 @app.route('/show_person')
 def show_person():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all person entries and relevant columns from the address table, joining them on the address_id
     cur.execute('''
         SELECT p.*, a.address_line, a.country, a.postal_code 
         FROM person p
         JOIN address a ON p.address_id = a.address_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     persons = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_person.html', persons=persons)
 
 
 # show owner
 @app.route('/show_owner')
 def show_owner():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all owner entries and relevant columns from the person and address table, joining them on the person_id and address_id
     cur.execute('''
         SELECT o.*, p.first_name, p.last_name, p.email, p.date_of_birth, p.phone_number, a.address_line 
         FROM owner o
         JOIN person p ON o.person_id = p.person_id
         JOIN address a ON p.address_id = a.address_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     owners = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_owner.html', owners=owners)
 
 
 # show agent
 @app.route('/show_agent')
 def show_agent():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all agent entries and relevant columns from the person and address table, joining them on the person_id and address_id
     cur.execute('''
         SELECT ag.*, p.first_name, p.last_name, p.email, p.date_of_birth, p.phone_number, a.address_line 
         FROM agent ag
         JOIN person p ON ag.person_id = p.person_id
         JOIN address a ON p.address_id = a.address_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     agents = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_agent.html', agents=agents)
+
 
 # show client
 @app.route('/show_client')
 def show_client():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all client entries and relevant columns from the person and address table, joining them on the person_id and address_id
     cur.execute('''
         SELECT cl.*, p.first_name, p.last_name, p.email, p.date_of_birth, p.phone_number, a.address_line 
         FROM client cl
         JOIN person p ON cl.person_id = p.person_id
         JOIN address a ON p.address_id = a.address_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     clients = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_client.html', clients=clients)
+
 
 # show location
 @app.route('/show_location')
 def show_location():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all location entries
     cur.execute('SELECT * FROM location;')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     locations = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_location.html', locations=locations)
 
 
 # show property
 @app.route('/show_property')
 def show_property():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+    
+    # select all property entries and relevant columns from the location, owner, and person table, joining them on the location_id, owner_id, and person_id
     cur.execute('''
         SELECT p.*, per.first_name, per.last_name, l.latitude, l.longitude
         FROM property p
@@ -429,18 +494,28 @@ def show_property():
         JOIN owner o ON p.owner_id = o.owner_id
         JOIN person per ON o.person_id = per.person_id;  -- Join with person table to get owner name
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     properties = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_property.html', properties=properties)
 
 # show contract
 @app.route('/show_contract')
 def show_contract():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all contract entries and relevant columns from the agent, client, property, and location table, joining them on the agent_id, client_id, property_id, and location_id
     cur.execute('''
         SELECT c.contract_id, c.sign_date, 
                a.first_name AS agent_first_name, a.last_name AS agent_last_name, 
@@ -454,28 +529,45 @@ def show_contract():
         JOIN property p ON c.property_id = p.property_id
         JOIN location l ON p.location_id = l.location_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     contracts = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_contract.html', contracts=contracts)
 
 # show payment
 @app.route('/show_payment')
 def show_payment():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all payment entries and relevant columns from the contract table, joining them on the contract_id
     cur.execute('''
         SELECT p.*, c.contract_id 
         FROM payment p
         JOIN contract c ON p.contract_id = c.contract_id;
     ''')
-    rows = cur.fetchall()
+    rows = cur.fetchall() # fetch all rows returned by the query
+
+    # extract the column names from the cursor object
     columns = [desc[0] for desc in cur.description]
+
+    # combine the column names and row values into a list of dictionaries
     payments = [dict(zip(columns, row)) for row in rows]
+
+    # close the cursor and connection
     cur.close()
     conn.close()
+
     return render_template('show_payment.html', payments=payments)
 
 
@@ -483,16 +575,23 @@ def show_payment():
 # create address
 @app.route('/create_address', methods=['GET', 'POST'])
 def create_address():
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         street_number = request.form['street_number']
         address_line = request.form['address_line']
         country = request.form['country']
         postal_code = request.form['postal_code']
         
+        # establish a database connection and create a cursor object
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # insert the form data into the address table
         cur.execute('INSERT INTO address (street_number, address_line, country, postal_code) VALUES (%s, %s, %s, %s)',
                     (street_number, address_line, country, postal_code))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
@@ -503,7 +602,9 @@ def create_address():
 # create person
 @app.route('/create_person', methods=['GET', 'POST'])
 def create_person():
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         first_name = request.form['first_name']
         last_name = request.form['last_name']
         date_of_birth = request.form['date_of_birth']
@@ -511,21 +612,31 @@ def create_person():
         email = request.form['email']
         address_id = request.form['address_id'] 
         
+        # establish a database connection and create a cursor object
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # insert the form data into the person table
         cur.execute('''
             INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) 
             VALUES (%s, %s, %s, %s, %s, %s)
         ''', (first_name, last_name, date_of_birth, phone_number, email, address_id))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect(url_for('show_person'))
   
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all address entries from the address table
     cur.execute('SELECT address_id, address_line FROM address;')
+
+    # fetch all rows returned by the query and close the cursor and connection
     addresses = cur.fetchall()
     cur.close()
     conn.close()
@@ -535,26 +646,38 @@ def create_person():
 # create owner
 @app.route('/create_owner', methods=['GET', 'POST'])
 def create_owner():
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         person_id = request.form['person_id'] 
         resident_status = request.form['resident_status']
         acquisition_date = request.form['acquisition_date']
         
+        # establish a database connection and create a cursor object
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # insert the form data into the owner table
         cur.execute('''
             INSERT INTO owner (person_id, resident_status, acquisition_date) 
             VALUES (%s, %s, %s)
         ''', (person_id, resident_status, acquisition_date))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect(url_for('show_owner'))
 
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all person entries from the person table
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
+
+    # fetch all rows returned by the query and close the cursor and connection
     persons = cur.fetchall()
     cur.close()
     conn.close()
@@ -564,22 +687,28 @@ def create_owner():
 # create agent
 @app.route('/create_agent', methods=['GET', 'POST'])
 def create_agent():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         person_id = request.form['person_id']
         employment_date = request.form['employment_date']
 
+        # insert the form data into the agent table
         cur.execute('''
             INSERT INTO agent (person_id, employment_date) 
             VALUES (%s, %s)
         ''', (person_id, employment_date))
-        conn.commit()
+        conn.commit() # commit changes to the database
 
+    # select all person entries from the person table
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
-    persons = cur.fetchall()
 
+    # fetch all rows returned by the query and close the cursor and connection
+    persons = cur.fetchall()
     cur.close()
     conn.close()
 
@@ -588,22 +717,28 @@ def create_agent():
 # create client
 @app.route('/create_client', methods=['GET', 'POST'])
 def create_client():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # select all person entries from the person table
     cur.execute('SELECT person_id, first_name, last_name FROM person;')
-    persons = cur.fetchall()
+    persons = cur.fetchall() # fetch all rows returned by the query
 
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         person_id = request.form['person_id']
         purchase_date = request.form['purchase_date']
 
+        # insert the form data into the client table
         cur.execute('''
             INSERT INTO client (person_id, purchase_date) 
             VALUES (%s, %s)
         ''', (person_id, purchase_date))
-        conn.commit()
+        conn.commit() # commit changes to the database
 
+    # close the cursor and connection
     cur.close()
     conn.close()
 
@@ -612,14 +747,21 @@ def create_client():
 # create location
 @app.route('/create_location', methods=['GET', 'POST'])
 def create_location():
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         latitude = request.form['latitude']
         longitude = request.form['longitude']
         
+        # establish a database connection and create a cursor object
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # insert the form data into the location table
         cur.execute('INSERT INTO location (latitude, longitude) VALUES (%s, %s)',
                     (latitude, longitude))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
@@ -630,19 +772,25 @@ def create_location():
 # create property
 @app.route('/create_property', methods=['GET', 'POST'])
 def create_property():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT location_id, latitude, longitude FROM location;')
-    locations = cur.fetchall()
 
+    # select all location entries from the location table
+    cur.execute('SELECT location_id, latitude, longitude FROM location;')
+    locations = cur.fetchall() # fetch all rows returned by the query
+
+    # select all owner entries from the owner table
     cur.execute('''
         SELECT o.owner_id, p.first_name || ' ' || p.last_name AS owner_name
         FROM owner o
         JOIN person p ON o.person_id = p.person_id;
     ''')
-    owners = cur.fetchall()
+    owners = cur.fetchall() # fetch all rows returned by the query
     
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         number_of_rooms = request.form['number_of_rooms']
         building_year = request.form['building_year']
         area_size = request.form['area_size']
@@ -650,49 +798,66 @@ def create_property():
         location_id = request.form['location_id']
         owner_id = request.form['owner_id'] 
 
+        # insert the form data into the property table
         cur.execute('''
             INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) 
             VALUES (%s, %s, %s, %s, %s, %s)
         ''', (number_of_rooms, building_year, area_size, price, location_id, owner_id))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect(url_for('show_property'))
+
+    # close the cursor and connection
     cur.close()
     conn.close()
-    return render_template('create_property.html', locations=locations, owners=owners)
 
+    return render_template('create_property.html', locations=locations, owners=owners)
 
 
 # create contract
 @app.route('/create_contract', methods=['GET', 'POST'])
 def create_contract():
+    # check if the request method is POST, which means the form has been submitted
     if request.method == 'POST':
+        # retrieve form data from the request object
         sign_date = request.form['sign_date']
         agent_id = request.form['agent_id']
         client_id = request.form['client_id']
         property_id = request.form['property_id']
         
+        # establish a database connection and create a cursor object
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # insert the form data into the contract table
         cur.execute('''
             INSERT INTO contract (sign_date, agent_id, client_id, property_id) 
             VALUES (%s, %s, %s, %s)
         ''', (sign_date, agent_id, client_id, property_id))
+
+        # commit changes to the database and close the cursor and connection
         conn.commit()
         cur.close()
         conn.close()
         
         return redirect(url_for('show_contract'))
 
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
+
+    # select all agent, client and property entries from the agent, client and property tables
     cur.execute('SELECT agent_id, first_name, last_name FROM agent JOIN person ON agent.person_id = person.person_id;')
     agents = cur.fetchall()
     cur.execute('SELECT client_id, first_name, last_name FROM client JOIN person ON client.person_id = person.person_id;')
     clients = cur.fetchall()
     cur.execute('SELECT property_id, location FROM property;')
+
+    # fetch all rows returned by the query and close the cursor and connection
     properties = cur.fetchall()
     cur.close()
     conn.close()
@@ -702,23 +867,28 @@ def create_contract():
 # create payment
 @app.route('/create_payment', methods=['GET', 'POST'])
 def create_payment():
+    # establish a database connection and create a cursor object
     conn = get_db_connection()
     cur = conn.cursor()
 
+    # select all contract entries from the contract table
     if request.method == 'POST':
         amount = request.form['amount']
         date = request.form['date']
         contract_id = request.form['contract_id']
         
+        # insert the form data into the payment table
         cur.execute('''
             INSERT INTO payment (amount, date, contract_id) 
             VALUES (%s, %s, %s)
         ''', (amount, date, contract_id))
-        conn.commit()
+        conn.commit() # commit changes to the database
 
+    # select all contract entries from the contract table
     cur.execute('SELECT contract_id FROM contract;')
-    contracts = cur.fetchall()
+    contracts = cur.fetchall() # fetch all rows returned by the query
 
+    # close the cursor and connection
     cur.close()
     conn.close()
 
