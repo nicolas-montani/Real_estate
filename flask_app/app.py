@@ -25,13 +25,12 @@ def get_db_connection():
     return conn
 
 # function to create the database tables
-def setup_db():
-    # Create the database
-    create_database(DATABASE_NAME)
-    conn = get_db_connection()
-    cur = conn.cursor()
+def setup_db(): 
+    create_database(DATABASE_NAME) # create the database
+    conn = get_db_connection() # open a connection to the database
+    cur = conn.cursor() # create a cursor object
 
-    # Create address table
+    # create address table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS address (
             address_id SERIAL PRIMARY KEY,
@@ -42,7 +41,7 @@ def setup_db():
         );
     ''')
 
-    # Create person table
+    # create person table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS person (
             person_id SERIAL PRIMARY KEY,
@@ -56,7 +55,7 @@ def setup_db():
         );
     ''')
 
-    # Create owner table
+    # create owner table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS owner (
             owner_id SERIAL PRIMARY KEY,
@@ -67,7 +66,7 @@ def setup_db():
         );
     ''')
 
-    # Create agent table
+    # create agent table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS agent (
             agent_id SERIAL PRIMARY KEY,
@@ -77,7 +76,7 @@ def setup_db():
         );
     ''')
 
-    # Create client table
+    # create client table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS client (
             client_id SERIAL PRIMARY KEY,
@@ -111,7 +110,7 @@ def setup_db():
         );
     ''')
 
-    # Create contract table
+    # create contract table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS contract (
             contract_id SERIAL PRIMARY KEY,
@@ -125,7 +124,7 @@ def setup_db():
         );
     ''')
 
-    # Create payment table
+    # create payment table
     cur.execute('''
         CREATE TABLE IF NOT EXISTS payment (
             payment_id SERIAL PRIMARY KEY,
@@ -136,106 +135,136 @@ def setup_db():
         );
     ''')
 
-    # Commit the changes to the database
+    # commt the changes to the database and close the connection
     conn.commit()
     cur.close()
     conn.close()
 
 
-# function to create a new database in PostgreSQL
+# function to create a new database with PostgreSQL
 def create_database(db_name):
-    # Connection string to connect with the default 'postgres' database
-    conn_string = POSTGRES_URL + '/postgres'
+    conn_string = POSTGRES_URL + '/postgres' # connection string to connect with the default 'postgres' database
 
-    # Connect to the PostgreSQL server
+    # connect to the PostgreSQL server
     conn = psycopg2.connect(conn_string)
-    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)  # <-- AUTOCOMMIT
-    cursor = conn.cursor()
+    conn.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT) 
+    cursor = conn.cursor() # create a cursor object
 
-    # Check if the database already exists
+    # check if the database already exists
     cursor.execute("SELECT 1 FROM pg_catalog.pg_database WHERE datname = %s", (db_name,))
     exists = cursor.fetchone()
 
+    # if the database exists, drop it (remove the database)
     if exists:
         cursor.execute(f"DROP DATABASE {db_name}")
 
-    # If the database does not exist, then create it
+    # if the database does not exist, then create it
     cursor.execute(f"CREATE DATABASE {db_name}")
 
     cursor.close()
     conn.close()
 
 
-# Function to fill database
+# function to fill database
 def seed_db():
     try:
-        # Establish a connection to the database
+        # establish a connection to the database
         conn = get_db_connection()
         cur = conn.cursor()
 
-        # Insert data into the address table
+        # insert data into the address table
         address_values = [
             (101, 'First St', 'Wonderland', '12345'),
             (202, 'Second St', 'Neverland', '23456'),
             (303, 'Third St', 'Oz', '34567'),
+            (404, 'Fourth Ave', 'Narnia', '45678'),
+            (505, 'Fifth Ave', 'Middle Earth', '56789'),
+            (606, 'Sixth Blvd', 'Atlantis', '67890'),
+            (707, 'Seventh Lane', 'El Dorado', '78901'),
+            (808, 'Eighth Road', 'Shangri-La', '89012'),
+            (909, 'Ninth Road', 'SNew York', '90012')
         ]
         cur.executemany('INSERT INTO address (street_number, address_line, country, postal_code) VALUES (%s, %s, %s, %s)', address_values)
 
-        # Insert data into the person table
+
+        # insert data into the person table
         person_values = [
             ('Alice', 'Liddell', '1985-05-04', '1112223333', 'alice@example.com', 1),
             ('Peter', 'Pan', '1986-06-04', '2223334444', 'peter@example.com', 2),
             ('Dorothy', 'Gale', '1987-07-04', '3334445555', 'dorothy@example.com', 3),
+            ('Wendy', 'Darling', '1988-08-04', '4445556666', 'wendy@example.com', 4),
+            ('Harry', 'Potter', '1989-09-04', '5556667777', 'harry@example.com', 5),
+            ('Hermione', 'Granger', '1990-10-04', '6667778888', 'hermione@example.com', 6),
+            ('Ron', 'Weasley', '1991-11-04', '7778889999', 'ron@example.com', 7),
+            ('Luke', 'Skywalker', '1992-12-04', '8889990000', 'luke@example.com', 8),
+            ('Henry', 'Potter', '1999-12-04', '8887990000', 'henry@example.com', 9)
         ]
         cur.executemany('INSERT INTO person (first_name, last_name, date_of_birth, phone_number, email, address_id) VALUES (%s, %s, %s, %s, %s, %s)', person_values)
 
-        # Insert data into the owner table
+        # insert data into the owner table
         owner_values = [
             (1, 'Permanent', '2001-01-01'),
-            (2, 'Permanent', '2002-02-02'),
-            (3, 'Permanent', '2003-03-03'),
+            (2, 'Temporary', '2002-02-02'),
+            (3, 'Permanent', '2003-03-03')
         ]
         cur.executemany('INSERT INTO owner (person_id, resident_status, acquisition_date) VALUES (%s, %s, %s)', owner_values)
 
-        # Insert data into the agent table
+        # insert data into the agent table
         agent_values = [
-            (1, '2010-01-01'),
-            (2, '2011-01-01'),
-            (3, '2012-01-01'),
+            (4, '2010-01-01'),
+            (5, '2011-02-01'),
+            (6, '2012-01-01')
         ]
         cur.executemany('INSERT INTO agent (person_id, employment_date) VALUES (%s, %s)', agent_values)
 
-        # Insert data into the client table
+        # insert data into the client table
         client_values = [
-            (1, '2020-01-01'),
-            (2, '2021-01-01'),
-            (3, '2022-01-01'),
+            (7, '2020-01-01'),
+            (8, '2021-02-01'),
+            (9, '2022-01-01')
         ]
         cur.executemany('INSERT INTO client (person_id, purchase_date) VALUES (%s, %s)', client_values)
 
-        # Insert sample data into the location table
+        # insert sample data into the location table
         location_values = [
-            (40.712776, -74.005974),  # Latitude and longitude for New York City
-            (34.052235, -118.243683),  # Latitude and longitude for Los Angeles
-            (51.507351, -0.127758),    # Latitude and longitude for London
+            (40.712776, -74.005974), 
+            (34.052235, -118.243683),  
+            (51.507351, -0.127758),  
+            (35.689487, 139.691706),  
+            (48.856614, 2.352222),  
+            (55.755826, 37.617300), 
+            (-33.868820, 151.209296),  
+            (-23.550520, -46.633309),  
+            (52.520007, 13.404954)
         ]
         cur.executemany('INSERT INTO location (latitude, longitude) VALUES (%s, %s)', location_values)
 
 
-        # Insert data into the property table
-        # Assuming the first three location_ids are for the locations inserted above
+        # insert data into the property table
         property_values = [
-            (3, 1990, 100.0, 200000.0, 1, 1),  
-            (4, 1980, 150.0, 250000.0, 2, 2),  
-            (5, 2000, 200.0, 300000.0, 3, 3),  
+            (3, 1990, 100.0, 200000.0, 1, 1),
+            (4, 1980, 150.0, 250000.0, 2, 2),
+            (5, 2000, 200.0, 300000.0, 3, 3),
+            (2, 2010, 120.0, 180000.0, 4, 1),
+            (6, 1975, 250.0, 400000.0, 5, 2),
+            (1, 2020, 80.0,  150000.0, 6, 3),
+            (3, 1950, 90.0,  220000.0, 7, 1),
+            (4, 1995, 180.0, 350000.0, 8, 2),
+            (5, 1985, 160.0, 275000.0, 9, 3)
         ]
         cur.executemany('INSERT INTO property (number_of_rooms, building_year, area_size, price, location_id, owner_id) VALUES (%s, %s, %s, %s, %s, %s)', property_values)
 
-         # Insert data into the contract table
+         # insert data into the contract table
         contract_values = [
             ('2022-01-01', 1, 1, 1),
             ('2022-02-01', 2, 2, 2),
             ('2022-03-01', 3, 3, 3),
+            ('2022-04-01', 1, 1, 4),
+            ('2022-05-01', 2, 2, 5),
+            ('2022-06-01', 3, 3, 6),
+            ('2022-07-01', 1, 1, 7),
+            ('2022-08-01', 2, 2, 8),
+            ('2022-09-01', 3, 3, 9)
         ]
         cur.executemany('INSERT INTO contract (sign_date, agent_id, client_id, property_id) VALUES (%s, %s, %s, %s)', contract_values)
 
@@ -245,23 +274,30 @@ def seed_db():
             (100000.0, '2022-01-05', 1),
             (150000.0, '2022-02-05', 2),
             (200000.0, '2022-03-05', 3),
+            (175000.0, '2022-04-06', 4),
+            (225000.0, '2022-05-07', 5),
+            (120000.0, '2022-06-08', 6),
+            (160000.0, '2022-07-09', 7),
+            (210000.0, '2022-08-10', 8),
+            (190000.0, '2022-09-11', 9)
         ]
         cur.executemany('INSERT INTO payment (amount, date, contract_id) VALUES (%s, %s, %s)', payment_values)
 
-        # Commit the transaction
+        # commit the transaction
         conn.commit()
 
         print("Database seeded successfully.")
 
+    # Exception handling
     except psycopg2.Error as e:
-        # This catches PostgreSQL database related errors
+        # this catches PostgreSQL database related errors
         print(f"An error occurred while seeding the database: {e}")
     except Exception as e:
-        # This catches non-database related errors
+        # this catches non-database related errors
         print(f"An unexpected error occurred while seeding the database: {e}")
         raise e
     finally:
-        # Ensure that the cursor and connection are closed properly
+        # ensure that the cursor and connection are closed properly
         if cur is not None:
             cur.close()
         if conn is not None:
@@ -704,8 +740,8 @@ def create_payment():
 
 
 with app.app_context():
-    setup_db()  # Set up the database and create tables
-    seed_db()   # Seed the database with initial data
+    setup_db()  # set up the database and create tables
+    seed_db()   # seed the database with initial data
 
 if __name__ == '__main__':
     app.run(debug=True)
