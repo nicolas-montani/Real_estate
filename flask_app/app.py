@@ -68,7 +68,6 @@ def setup_db():
             agent_id SERIAL PRIMARY KEY,
             person_id INTEGER NOT NULL,
             employment_date DATE NOT NULL,
-            manages INTEGER,  -- Assuming this is a reference to another agent ID
             FOREIGN KEY (person_id) REFERENCES person(person_id)
         );
     ''')
